@@ -191,7 +191,8 @@
 			frequency = 82.5;
 	}
 
-	function numerator_down(i) {
+	function numerator_down(t) {
+		let i = parseInt(t.textContent);
 		if (beep_holder[i] === undefined){
 			stop_beep(beep_holder[i]);
 			delete beep_holder[i];
@@ -214,9 +215,7 @@
 	}
 
 	function press_green(t) {
-		let i = parseInt(t.textContent);
-		numerator_down(i);
-		return i;
+		numerator_down(t);
 	}
 	function press_purple(t) {
 		let i = parseInt(t.textContent.substr(0, 1));
