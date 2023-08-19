@@ -192,8 +192,11 @@
 	}
 
 	function numerator_down(i) {
-		if (beep_holder[i] === undefined)
-			beep_holder[i] = interruptible_beep(i * frequency);
+		if (beep_holder[i] === undefined){
+			stop_beep(beep_holder[i]);
+			delete beep_holder[i];
+		}
+		beep_holder[i] = interruptible_beep(i * frequency);
 	}
 	function numerator_up(i) {
 		if (beep_holder[i] === undefined)
