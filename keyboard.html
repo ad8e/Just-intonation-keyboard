@@ -138,7 +138,7 @@
 	//https://stackoverflow.com/q/50372849
 	//https://bugs.chromium.org/p/chromium/issues/detail?id=843558
 
-	let audioCtx = undefined;
+	let audioCtx = null;
 	let incrementor_for_IDs = 1;
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
@@ -149,8 +149,10 @@
 
 		//backup synthesizer in javascript, in case WASM fails. can have up to 20 ms latency, depending on your browser + OS.
 
-		if (audioCtx === undefined)
+		if (audioCtx === null) {
 			audioCtx = new AudioContext();
+			console.log(audioCtx);
+		}
 
 		volume *= 50.0 / frequency;
 		let oscillatorOptions = { frequency: frequency, type: type };
