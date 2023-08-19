@@ -346,11 +346,28 @@
 	});
 
 	//for a player piano. this function is called from emscripten
-	function turn_button_on_off(str, on) {
+	function turn_button_on_off(str, on, ID) {
 		let t = document.getElementById(str);
-		if (on)
-			downpress(t);
-		else release(t);
+		//if (on)
+		//	downpress(t);
+		//else release(t);
+		if (on) {
+			const downEvent = new PointerEvent("pointerdown", {
+			  pointerId: ID,
+			  bubbles: true,
+			});
+			t.dispatchEvent(downEvent);
+		}
+		else {
+
+		if (on) {
+			const upEvent = new PointerEvent("pointerup", {
+			  pointerId: ID,
+			  bubbles: true,
+			});
+			t.dispatchEvent(pointerup);
+		}
+		}
 	}
 </script>
 </body>
