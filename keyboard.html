@@ -300,7 +300,7 @@
 		}
 		pup(id);
 		pdown(id, t);
-	}, { passive: true }); //it seems like pointer events are passive by default, but I couldn't find any reliable confirmation
+	}); //https://github.com/w3c/pointerevents/issues/359#issuecomment-819828218 "pointerevent listeners are passive by default"
 
 	//catch all mouseups, not just ones over the keyboard
 	addEventListener("pointerup", (e) => {
@@ -332,7 +332,7 @@
 			pup(id);
 			pdown(id, t);
 		}
-	}, { passive: true }); //no idea if passive does anything here
+	});
 
 	//prevent double tap to select
 	addEventListener("touchend", (e) => {
