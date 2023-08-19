@@ -133,7 +133,7 @@
 	//license for keyboard: 0BSD
 	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
 
-	//Chrome and Edge have a 5-year old bug causing spurious keypresses. A workaround is to not hold down harmony keys. A code solution would be to keep track of whether the harmonic keys are pressed. I didn't bother.
+	//Chrome and Edge have a 5-year old bug causing spurious keypresses. Just don't hold down harmony keys. A code solution would be to keep track of whether the harmonic keys are pressed. I didn't bother.
 	//https://stackoverflow.com/q/50372849
 	//https://bugs.chromium.org/p/chromium/issues/detail?id=843558
 
@@ -342,6 +342,14 @@
 			}
 		};
 	});
+
+	//for a player piano. this function is called from emscripten
+	function turn_button_on_off(str, on) {
+		let t = document.getElementById(str);
+		if (onoff)
+			downpress(t);
+		else release(t);
+	}
 </script>
 </body>
 
