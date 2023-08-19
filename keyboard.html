@@ -347,7 +347,7 @@
 	//for a player piano. this function is called from emscripten
 	function turn_button_on_off(str, on) {
 		let t = document.getElementById(str);
-		if (onoff)
+		if (on)
 			downpress(t);
 		else release(t);
 	}
