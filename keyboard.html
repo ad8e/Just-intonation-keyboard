@@ -359,14 +359,12 @@
 			t.dispatchEvent(downEvent);
 		}
 		else {
-
-		if (on) {
 			const upEvent = new PointerEvent("pointerup", {
 			  pointerId: ID,
 			  bubbles: true,
 			});
 			t.dispatchEvent(upEvent);
-		}
+			console.log(upEvent);
 		}
 	}
 </script>
