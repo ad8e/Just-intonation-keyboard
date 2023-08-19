@@ -193,7 +193,7 @@
 
 	function numerator_down(t) {
 		let i = parseInt(t.textContent);
-		if (beep_holder[i] === undefined){
+		if (beep_holder[i] !== undefined){
 			stop_beep(beep_holder[i]);
 			delete beep_holder[i];
 		}
@@ -289,7 +289,6 @@
 		if (e.button !== 0)
 			return;
 		let id = e.pointerId;
-		let cached_event = pointerIdsPressed[id];
 		let t = e.target;
 		//console.log(e);
 
@@ -304,8 +303,7 @@
 	//catch all mouseups, not just ones over the keyboard
 	addEventListener("pointerup", (e) => {
 		let id = e.pointerId;
-		let cached_event = pointerIdsPressed[id];
-		let t = e.target;
+		//let t = e.target;
 		//console.log("releasing", e);
 
 		//prevent double tap to select
