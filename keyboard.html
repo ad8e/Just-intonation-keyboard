@@ -186,7 +186,8 @@
 
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
-		if (frequency < 20 || frequency > 331)
+		//I changed it to 1/8 and 8. because it's causing trouble for actual songs
+		if (frequency < 10 || frequency > 661)
 			frequency = 82.5;
 	}
 
