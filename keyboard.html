@@ -159,9 +159,15 @@
 		}
 
 		volume *= 50.0 / frequency;
-		let oscillatorOptions = { frequency: frequency, type: type };
-		let oscillator = new OscillatorNode(audioCtx, oscillatorOptions);
-		let gainNode = new GainNode(audioCtx);
+		//let oscillatorOptions = { frequency: frequency, type: type };
+		//let oscillator = new OscillatorNode(audioCtx, oscillatorOptions); //not supported until Safari 14.1
+		let oscillator = audioCtx.createOscillator();
+		oscillator.type = type;
+		oscillator.frequency = frequency;
+
+		//let gainNode = new GainNode(audioCtx); //not supported until Safari 14.1
+		let gainNode = audioCtx.createGain();
+
 		oscillator.connect(gainNode).connect(audioCtx.destination);
 
 		let now = audioCtx.currentTime + 0.015; //0.015 is for web browser audio latency. the actual latency is higher, but this only causes jumps in the gain, not the oscillator, so it isn't too bad.
