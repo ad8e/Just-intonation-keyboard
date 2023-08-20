@@ -163,7 +163,7 @@
 		//let oscillator = new OscillatorNode(audioCtx, oscillatorOptions); //not supported until Safari 14.1
 		let oscillator = audioCtx.createOscillator();
 		oscillator.type = type;
-		oscillator.frequency = frequency;
+		oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
 		//let gainNode = new GainNode(audioCtx); //not supported until Safari 14.1
 		let gainNode = audioCtx.createGain();
