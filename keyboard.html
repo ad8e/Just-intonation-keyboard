@@ -150,6 +150,10 @@
 		//backup synthesizer in javascript, in case WASM fails. can have up to 20 ms latency, depending on your browser + OS.
 
 		if (audioCtx === null) {
+			var AudioContext = window.AudioContext // Default
+		    || window.webkitAudioContext // Safari and old versions of Chrome
+		    || false;
+
 			audioCtx = new AudioContext();
 			console.log(audioCtx);
 		}
