@@ -149,7 +149,17 @@
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
-			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
+			let running = Module._play_interruptible_note(++incrementor_for_IDs, frequency);
+			if (!running) {
+				let p = document.createElement("p");
+				p.id = "mobiledoubletap";
+				p.textContent = "Tap to play; mobile requires two taps.";
+				keyboard.parentNode.insertBefore(p, keyboard);
+			}
+			else {
+				let p = document.getElementById("mobiledoubletap");
+				p.remove();
+			}
 			return incrementor_for_IDs;
 		}
 
