@@ -143,7 +143,7 @@
 
 	if (typeof SharedArrayBuffer === 'undefined') {
 		let p = document.createElement("p");
-		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though.";
+		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though. Safari 15.2 is needed for SharedArrayBuffers.";
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
