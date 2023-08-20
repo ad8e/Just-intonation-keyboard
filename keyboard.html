@@ -142,7 +142,7 @@
 	let incrementor_for_IDs = 1;
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
-		if (SharedArrayBuffer !== undefined && Module !== undefined && Module._play_interruptible_note !== undefined) {
+		if (typeof SharedArrayBuffer !== 'undefined' && Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
 			return incrementor_for_IDs;
 		}
@@ -181,7 +181,7 @@
 	};
 
 	function stop_beep(struct_of_stuff) {
-		if (SharedArrayBuffer !== undefined && Module !== undefined && Module._mute_interruptible_note !== undefined) {
+		if (typeof SharedArrayBuffer !== 'undefined' && Module !== undefined && Module._mute_interruptible_note !== undefined) {
 			Module._mute_interruptible_note(struct_of_stuff);
 			return;
 		}
