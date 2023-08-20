@@ -144,7 +144,7 @@
 	if (typeof SharedArrayBuffer === 'undefined') {
 		let p = document.createElement("p");
 		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though.";
-		keyboard.parentNode.insertBefore(keyboard, p);
+		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
