@@ -2,7 +2,7 @@
 <html lang='en-US'>
 <meta charset='utf-8'>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A better keyboard for music</title>
+<title>A novel keyboard for music</title>
 <style>
 	/* fork of https://kennethfriedman.org/thoughts/2019/marginal-notes/ */
 	body {
@@ -203,7 +203,7 @@
 
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
-		//I changed it to 1/8 and 8. because it's causing trouble for actual songs
+		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
 		if (frequency < 10 || frequency > 331)
 			frequency = 82.5;
 	}
