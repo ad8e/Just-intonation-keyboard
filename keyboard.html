@@ -178,6 +178,7 @@
 	}
 
 	let colors = [5, 5, 5, 5]; //anything but 6
+	//let colors_including_blue_keys = [5, 5, 5, 5];
 
 	function color_square(row, direction) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
@@ -250,6 +251,11 @@
 	function play_button(t) {
 		stop_recording();
 		play_on_keyboard(comp.value);
+	}
+	function record_button(t) {
+		if (recording)
+			stop_recording();
+		else start_recording();
 	}
 
 	function colors_to_primes() {
