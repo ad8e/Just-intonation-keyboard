@@ -244,10 +244,12 @@
 		recording = false;
 		recording_holder = [];
 		recording_start = 0;
+		recordbutton.textContent = "⏺ Record";
 	}
 	function start_recording() {
 		comp.value = "-s0.00001";
 		stop_recording();
+		recordbutton.textContent = "Recording:";
 		recording = true;
 	}
 	function play_button(t) {
