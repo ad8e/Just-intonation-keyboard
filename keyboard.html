@@ -454,12 +454,14 @@
 		if (direction) {
 			ch_harmony(i, 1, is_blue);
 			ch_harmony(j, 0, is_blue);
-			adjust_harmony(i / j); //adjust after changing colors - it might reset
+			if (!is_blue)
+				adjust_harmony(i / j); //adjust after changing colors - it might reset
 		}
 		else {
 			ch_harmony(i, 0, is_blue);
 			ch_harmony(j, 1, is_blue);
-			adjust_harmony(j / i); //adjust after changing colors - it might reset
+			if (!is_blue)
+				adjust_harmony(j / i); //adjust after changing colors - it might reset
 		}
 	}
 
