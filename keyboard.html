@@ -339,8 +339,8 @@
 		return { oscillator, gainNode, muteTime };
 	};
 
-	function stop_beep(handle) {
-		struct_of_stuff = beep_holder[handle];
+	function stop_beep(id) {
+		struct_of_stuff = beep_holder[id];
 
 		if (recording) {
 			let time = performance.now();
@@ -356,7 +356,7 @@
 		let muteTime = struct_of_stuff.muteTime;
 		struct_of_stuff.gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
 		struct_of_stuff.oscillator.stop(now + muteTime);
-		delete beep_holder[handle];
+		delete beep_holder[id];
 	}
 
 	let beep_holder = [];
