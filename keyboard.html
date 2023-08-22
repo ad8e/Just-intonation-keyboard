@@ -392,10 +392,10 @@
 	let beep_holder = [];
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
 	function reset_frequency() {
-		base_frequency = 82.5;
 		for (let r = 0; r < 4; ++r) {
 			color_square(r, -colors[r], 0);
 		}
+		base_frequency = 82.5;
 	}
 	reset_frequency();
 
