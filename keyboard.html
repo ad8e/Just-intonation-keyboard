@@ -363,6 +363,7 @@
 
 		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
 			Module._mute_interruptible_note(struct_of_stuff);
+			delete beep_holder[id];
 			return;
 		}
 		let now = audioCtx.currentTime;
