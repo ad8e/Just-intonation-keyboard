@@ -220,17 +220,15 @@
 		if (typeof BigInt === 'undefined') {
 			n = parseInt(split[0]);
 			d = 1;
-			if (split.length == 2){
+			if (split.length == 2)
 				d = parseInt(split[1]);
-			}
 			return [n, d];
 		}
 		else {
-			n = parseInt(split[0]);
+			n = BigInt(split[0]);
 			d = 1;
-			if (split.length == 2){
-				d = parseInt(split[1]);
-			}
+			if (split.length == 2)
+				d = BigInt(split[1]);
 			return [n, d];
 		}
 	}
