@@ -406,7 +406,8 @@
 			r[0] = r[1];
 			r[1] = temp;
 		}
-		ch_harmony(r, 1, 1);
+		ch_harmony(r[0], 1, 1);
+		ch_harmony(r[1], 0, 1);
 		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
