@@ -155,7 +155,7 @@
 
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
-	function play_on_keyboard(str) { frequency = 82.5; Module._play_string_keyboard(stringToNewUTF8(str)); }
+	function play_on_keyboard(str) { reset_frequency(); Module._play_string_keyboard(stringToNewUTF8(str)); }
 
 	//license for keyboard: 0BSD
 	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
@@ -194,14 +194,6 @@
 			}
 		}
 	}
-
-	function reset_coloring() {
-		for (let r = 0; r < 4; ++r) {
-			while (colors[r] != 6)
-				color_square(r, colors[r] <= 6);
-		}
-	}
-	reset_coloring();
 
 	function ch_harmony(number, direction) {
 		while (number % 2 == 0) {
@@ -274,6 +266,17 @@
 
 	let beep_holder = [];
 	let frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
+
+	function reset_frequency() {
+		frequency = 82.5;
+		for (let r = 0; r < 4; ++r) {
+			while (colors[r] != 6)
+				color_square(r, colors[r] <= 6);
+		}
+	}
+	reset_frequency();
+
+
 	function adjust_harmony(i) {
 		frequency *= i;
 
@@ -281,8 +284,7 @@
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
 		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
 		if (frequency < 10 || frequency > 331){
-			reset_coloring();
-			frequency = 82.5;
+			reset_frequency();
 		}
 	}
 
