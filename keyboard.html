@@ -177,11 +177,11 @@
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
-	let colors = [5, 5, 5, 5]; //anything but 6
-	let colors_excluding_blue_keys = [5, 5, 5, 5];
+	let colors = [0, 0, 0, 0];
+	let colors_excluding_blue_keys = [0, 0, 0, 0];
 
 	function color_square(row, change, is_blue) {
-		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
+		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
 		if (list.length)
 			list[0].classList.remove("on");
 
@@ -189,8 +189,8 @@
 		if (is_blue === 0)
 			colors_excluding_blue_keys[row] += change;
 
-		if (colors[row] >= 0) {
-			var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
+		{
+			var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
 			if (list.length)
 				list[0].classList.add("on");
 		}
@@ -267,9 +267,9 @@
 			let d = 1;
 			let primes = [2, 3, 5, 7];
 			for (let i = 0; i < 4; ++i) {
-				if (colors_excluding_blue_keys[i] < 6)
-					d *= primes[i] ** (6 - colors_excluding_blue_keys[i]);
-				else n *= primes[i] ** (colors_excluding_blue_keys[i] - 6);
+				if (colors_excluding_blue_keys[i] < 0)
+					d *= primes[i] ** (-colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** (colors_excluding_blue_keys[i]);
 			}
 			return [n, d];
 		}
@@ -278,9 +278,9 @@
 			let d = 1n;
 			let primes = [2n, 3n, 5n, 7n];
 			for (let i = 0; i < 4; ++i) {
-				if (colors_excluding_blue_keys[i] < 6)
-					d *= primes[i] ** BigInt(6 - colors_excluding_blue_keys[i]);
-				else n *= primes[i] ** BigInt(colors_excluding_blue_keys[i] - 6);
+				if (colors_excluding_blue_keys[i] < 0)
+					d *= primes[i] ** BigInt(- colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** BigInt(colors_excluding_blue_keys[i]);
 			}
 			return [n, d];
 		}
@@ -394,7 +394,7 @@
 	function reset_frequency() {
 		base_frequency = 82.5;
 		for (let r = 0; r < 4; ++r) {
-			color_square(r, 6 - colors[r], 0);
+			color_square(r, -colors[r], 0);
 		}
 	}
 	reset_frequency();
