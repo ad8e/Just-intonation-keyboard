@@ -341,7 +341,9 @@
 		numerator_down(t);
 	}
 	function press_purple(t) {
-		const [i, j] = fraction_on_key(t);
+		const [i_, j_] = fraction_on_key(t);
+		i = Number(i_);
+		j = Number(j_);
 		ch_harmony(i, 1);
 		ch_harmony(j, 0);
 		adjust_harmony(i / j); //adjust after changing colors - it might reset
