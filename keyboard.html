@@ -322,7 +322,10 @@
 		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
-			g.textContent = new_fraction[0].toString() + "/" + new_fraction[1].toString();
+			if (new_fraction[1] !== 1)
+				g.textContent = new_fraction[0].toString() + "/" + new_fraction[1].toString();
+			else
+				g.textContent = new_fraction[0].toString();
 		});
 	}
 
