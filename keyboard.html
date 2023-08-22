@@ -319,11 +319,11 @@
 			r[0] = r[1];
 			r[1] = temp;
 		}
-		for (g in document.getElementsByClassName("keyg")) {
+		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
 			g.textContent = new_fraction[0].toString() + "/" + new_fraction[1].toString();
-		}
+		});
 	}
 
 	function adjust_harmony(i) {
