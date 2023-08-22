@@ -195,12 +195,13 @@ function color_square(row, direction) {
 	}
 }
 
-for (let i = 0; i <= 6; ++i) {
-	color_square(0, 1);
-	color_square(1, 1);
-	color_square(2, 1);
-	color_square(3, 1);
+function reset_coloring() {
+	for (let r = 0; r < 4; ++r) {
+		while (colors[r] != 6)
+			color_square(r, colors[r] <= 6);
+	}
 }
+
 
 function ch_harmony(number, direction) {
 	while (number % 2 == 0) {
@@ -279,8 +280,10 @@ function ch_harmony(number, direction) {
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
 		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
-		if (frequency < 10 || frequency > 331)
+		if (frequency < 10 || frequency > 331){
+			reset_coloring();
 			frequency = 82.5;
+		}
 	}
 
 	function numerator_down(t) {
