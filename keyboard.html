@@ -180,18 +180,14 @@
 	let colors = [5, 5, 5, 5]; //anything but 6
 
 	function color_square(row, direction) {
-		let n = colors[row];
-		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
 		if (list.length)
 			list[0].classList.remove("on");
 
-		if (direction)
-			colors[row] += 1;
-		else colors[row] -= 1;
+		colors[row] += direction ? 1 : -1;
 
-		n = colors[row];
-		if (n >= 0) {
-			var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+		if (colors[row] >= 0) {
+			var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
 			if (list.length)
 				list[0].classList.add("on");
 		}
