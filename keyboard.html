@@ -451,18 +451,15 @@
 		const [i_, j_] = fraction_on_key(t);
 		i = Number(i_);
 		j = Number(j_);
-		if (direction) {
-			ch_harmony(i, 1, is_blue);
-			ch_harmony(j, 0, is_blue);
-			if (!is_blue)
-				adjust_harmony(i / j); //adjust after changing colors - it might reset
+
+		if (direction === 0) {
+			i = Number(j_);
+			j = Number(i_);
 		}
-		else {
-			ch_harmony(i, 0, is_blue);
-			ch_harmony(j, 1, is_blue);
-			if (!is_blue)
-				adjust_harmony(j / i); //adjust after changing colors - it might reset
-		}
+		ch_harmony(i, 1, is_blue);
+		ch_harmony(j, 0, is_blue);
+		if (!is_blue)
+			adjust_harmony(i / j); //adjust after changing colors - it might reset
 	}
 
 	function button_up_wrapper(t) {
