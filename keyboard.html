@@ -174,54 +174,53 @@
 	}
 
 
-let colors = [-1, -1, -1, -1];
+	let colors = [-1, -1, -1, -1];
 
-function color_square(row, direction) {
-	if (direction) {
-		colors[row] += 1;
-		let n = colors[row];
-		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
-		if (list.length)
-			list[0].classList.add("on");
+	function color_square(row, direction) {
+		if (direction) {
+			colors[row] += 1;
+			let n = colors[row];
+			var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+			if (list.length)
+				list[0].classList.add("on");
+		}
+		else {
+			let n = colors[row];
+			colors[row] -= 1;
+			if (n >= 0) {
+				var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+				if (list.length)
+					list[0].classList.remove("on");
+			}
+		}
 	}
-	else {
-		let n = colors[row];
-		colors[row] -= 1;
-		if (n >= 0)
-{		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
-		if (list.length)
-			list[0].classList.remove("on");
-}
-	}
-}
 
-function reset_coloring() {
-	for (let r = 0; r < 4; ++r) {
-		while (colors[r] != 6)
-			color_square(r, colors[r] <= 6);
+	function reset_coloring() {
+		for (let r = 0; r < 4; ++r) {
+			while (colors[r] != 6)
+				color_square(r, colors[r] <= 6);
+		}
 	}
-}
-reset_coloring();
+	reset_coloring();
 
-
-function ch_harmony(number, direction) {
-	while (number % 2 == 0) {
-		number /= 2;
-		color_square(0, direction);
+	function ch_harmony(number, direction) {
+		while (number % 2 == 0) {
+			number /= 2;
+			color_square(0, direction);
+		}
+		while (number % 3 == 0) {
+			number /= 3;
+			color_square(1, direction);
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			color_square(2, direction);
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			color_square(3, direction);
+		}
 	}
-	while (number % 3 == 0) {
-		number /= 3;
-		color_square(1, direction);
-	}
-	while (number % 5 == 0) {
-		number /= 5;
-		color_square(2, direction);
-	}
-	while (number % 7 == 0) {
-		number /= 7;
-		color_square(3, direction);
-	}
-}
 
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
@@ -316,9 +315,9 @@ function ch_harmony(number, direction) {
 	function press_purple(t) {
 		let i = parseInt(t.textContent.substr(0, 1));
 		let j = parseInt(t.textContent.substr(2, 1));
-		adjust_harmony(i / j);
 		ch_harmony(i, 1);
 		ch_harmony(j, 0);
+		adjust_harmony(i / j); //adjust after changing colors - it might reset
 	}
 
 	addEventListener("keydown", (e) => {
