@@ -177,8 +177,8 @@
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
-	let colors_excluding_blue_keys = [5, 5, 5, 5];
 	let colors = [5, 5, 5, 5]; //anything but 6
+	let colors_excluding_blue_keys = [5, 5, 5, 5];
 
 	function color_square(row, direction, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
@@ -196,22 +196,22 @@
 		}
 	}
 
-	function ch_harmony(number, direction) {
+	function ch_harmony(number, direction, is_blue) {
 		while (number % 2 == 0) {
 			number /= 2;
-			color_square(0, direction, 0);
+			color_square(0, direction, is_blue);
 		}
 		while (number % 3 == 0) {
 			number /= 3;
-			color_square(1, direction, 0);
+			color_square(1, direction, is_blue);
 		}
 		while (number % 5 == 0) {
 			number /= 5;
-			color_square(2, direction, 0);
+			color_square(2, direction, is_blue);
 		}
 		while (number % 7 == 0) {
 			number /= 7;
-			color_square(3, direction, 0);
+			color_square(3, direction, is_blue);
 		}
 	}
 
@@ -394,7 +394,7 @@
 		base_frequency = 82.5;
 		for (let r = 0; r < 4; ++r) {
 			while (colors[r] != 6)
-				color_square(r, colors[r] <= 6, 0);
+				color_square(r, colors[r] <= 6);
 		}
 	}
 	reset_frequency();
@@ -406,6 +406,7 @@
 			r[0] = r[1];
 			r[1] = temp;
 		}
+		ch_harmony(r, 1, 1);
 		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
@@ -449,13 +450,13 @@
 		i = Number(i_);
 		j = Number(j_);
 		if (direction) {
-			ch_harmony(i, 1);
-			ch_harmony(j, 0);
+			ch_harmony(i, 1, 0);
+			ch_harmony(j, 0, 0);
 			adjust_harmony(i / j); //adjust after changing colors - it might reset
 		}
 		else {
-			ch_harmony(i, 0);
-			ch_harmony(j, 1);
+			ch_harmony(i, 0, 0);
+			ch_harmony(j, 1, 0);
 			adjust_harmony(j / i); //adjust after changing colors - it might reset
 		}
 	}
