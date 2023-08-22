@@ -209,15 +209,15 @@ function ch_harmony(number, direction) {
 	}
 	while (number % 3 == 0) {
 		number /= 3;
-		color_square(0, direction);
+		color_square(1, direction);
 	}
 	while (number % 5 == 0) {
 		number /= 3;
-		color_square(0, direction);
+		color_square(2, direction);
 	}
 	while (number % 7 == 0) {
 		number /= 7;
-		color_square(0, direction);
+		color_square(3, direction);
 	}
 }
 
