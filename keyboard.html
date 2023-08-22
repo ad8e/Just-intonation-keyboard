@@ -180,21 +180,20 @@
 	let colors = [-1, -1, -1, -1];
 
 	function color_square(row, direction) {
-		if (direction) {
+		let n = colors[row];
+		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+		if (list.length)
+			list[0].classList.remove("on");
+
+		if (direction)
 			colors[row] += 1;
-			let n = colors[row];
+		else colors[row] -= 1;
+
+		n = colors[row];
+		if (n >= 0) {
 			var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
 			if (list.length)
 				list[0].classList.add("on");
-		}
-		else {
-			let n = colors[row];
-			colors[row] -= 1;
-			if (n >= 0) {
-				var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
-				if (list.length)
-					list[0].classList.remove("on");
-			}
 		}
 	}
 
