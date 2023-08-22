@@ -322,7 +322,10 @@
 
 	addEventListener("keydown", (e) => {
 		if (e.ctrlKey) return;
-		if (e.code === 'Slash' || e.code === 'Quote') e.preventDefault(); //prevent Quick find on Firefox
+		if (e.code === 'Slash' || e.code === 'Quote') {
+			if (e.target.tagName.toUpperCase() !== 'INPUT')
+				e.preventDefault(); //prevent Quick find on Firefox
+		}
 		if (e.repeat) return;
 
 		let t = document.getElementById(e.code);
