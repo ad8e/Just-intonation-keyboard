@@ -357,7 +357,7 @@
 				const [time_start, rational] = recording_holder[id];
 				let time_from_start = Math.round(100 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 10 us is good enough
 				let duration = Math.round(100 * (time - time_start)).toString();
-				comp.value += "[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
+				comp.value += "-[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
 				delete recording_holder[id];
 
 			}
