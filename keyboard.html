@@ -237,6 +237,21 @@
 	let recording_holder = [];
 	let recording_start = 0;
 
+	function stop_recording() {
+		recording = false;
+		recording_holder = [];
+		recording_start = 0;
+	}
+	function start_recording() {
+		comp.value = "-s0.00001";
+		stop_recording();
+		recording = true;
+	}
+	function play_button(t) {
+		stop_recording();
+		play_on_keyboard(comp.value);
+	}
+
 	function colors_to_primes() {
 		if (typeof BigInt === 'undefined') {
 			let n = 1;
@@ -280,16 +295,6 @@
 				return a[0].toString();
 	}
 
-	function stop_recording() {
-		recording = false;
-		recording_holder = [];
-		recording_start = 0;
-	}
-	function start_recording() {
-		comp.value = "s0.00001";
-		stop_recording();
-		recording = true;
-	}
 
 	function interruptible_beep(t, volume = 1.0, type = 'sine') {
 		let rational = fraction_on_key(t);
