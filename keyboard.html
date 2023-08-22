@@ -57,6 +57,7 @@
 	.keyd,
 	.keyg,
 	.keyp,
+	.keyb,
 	.keyn {
 		/* margin counts twice. no collapsing either horizontally or vertically. border is internal as long as it is not huge */
 		margin: calc(var(--key-scale) * 0.05);
@@ -97,7 +98,7 @@
 		color: #9a00d2;
 		transition: color 0.3s ease-out;
 	}
-	.keyd, .keyg, .keyp {
+	.keyd, .keyg, .keyp, .keyb {
 		border-color: #efefef #d5d5d5 #ababab;
 		border-style: solid;
 	}
@@ -337,16 +338,49 @@
 		t.classList.remove("depress");
 	}
 
-	function press_green(t) {
-		numerator_down(t);
-	}
-	function press_purple(t) {
+	function adjust_purple(t, direction) {
 		const [i_, j_] = fraction_on_key(t);
 		i = Number(i_);
 		j = Number(j_);
-		ch_harmony(i, 1);
-		ch_harmony(j, 0);
-		adjust_harmony(i / j); //adjust after changing colors - it might reset
+		if (direction) {
+			ch_harmony(i, 1);
+			ch_harmony(j, 0);
+			adjust_harmony(i / j); //adjust after changing colors - it might reset
+		}
+		else {
+			ch_harmony(i, 0);
+			ch_harmony(j, 1);
+			adjust_harmony(j / i); //adjust after changing colors - it might reset
+		}
+	}
+
+	function button_up_wrapper(t) {
+		if (t.classList.contains("keyg")) {
+			button_up(t);
+			release(t);
+		}
+		else if (t.classList.contains("keyp")) {
+			release(t);
+		}
+		else if (t.classList.contains("keyb")) {
+			adjust_purple(t, false);
+			release(t);
+		}
+	}
+
+	//returns true if pressed
+	function button_down_wrapper(t) {
+		if (t.classList.contains("keyg")) {
+			numerator_down(t);
+			downpress(t);
+			return true;
+		}
+		else if (t.classList.contains("keyp") || t.classList.contains("keyb")) {
+			adjust_purple(t, true);
+			downpress(t);
+			return true;
+		}
+		return false;
 	}
 
 	addEventListener("keydown", (e) => {
@@ -358,56 +392,27 @@
 		let t = document.getElementById(e.code);
 		if (t === null)
 			return;
-
-		if (t.classList.contains("keyg")) {
-			press_green(t);
-			downpress(t);
-		}
-		else if (t.classList.contains("keyp")) {
-			press_purple(t);
-			downpress(t);
-		}
+		button_down_wrapper(t);
 	});
 
 	addEventListener("keyup", (e) => {
 		let t = document.getElementById(e.code);
 		if (t === null)
 			return;
-
-		if (t.classList.contains("keyg")) {
-			button_up(t);
-			release(t);
-		}
-		else if (t.classList.contains("keyp")) {
-			release(t);
-		}
+		button_up_wrapper(t);
 	});
 
 	function pdown(id, t) {
 		if (t.classList === undefined) //t can be an "HTMLDocument", if you drag the mouse into the chrome
 			return;
-		if (t.classList.contains("keyg")) {
-			press_green(t);
-			downpress(t);
+		if (button_down_wrapper(t))
 			pointerIdsPressed[id] = t;
-		}
-		else if (t.classList.contains("keyp")) {
-			press_purple(t);
-			downpress(t);
-			pointerIdsPressed[id] = t;
-		}
 	}
 	function pup(id) {
 		let t = pointerIdsPressed[id];
 		if (t === undefined)
 			return;
-		if (t.classList.contains("keyg")) {
-			button_up(t);
-			release(t);
-		}
-		else if (t.classList.contains("keyp")) {
-			release(t);
-		}
+		button_up_wrapper(t);
 		delete pointerIdsPressed[id];
 	}
 
@@ -430,9 +435,6 @@
 	//catch all mouseups, not just ones over the keyboard
 	addEventListener("pointerup", (e) => {
 		let id = e.pointerId;
-		//let t = e.target;
-		//console.log("releasing", e);
-
 		//prevent double tap to select
 		//apparently, this doesn't work in pointerup. only touchend can prevent (forest fires) double tap to select?
 		//let in_keyboard = t.closest("#keyboard");
