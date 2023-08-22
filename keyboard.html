@@ -174,7 +174,7 @@
 	}
 
 
-let colors = [6, 6, 6, 6];
+let colors = [0, 0, 0, 0];
 
 function color_square(row, direction) {
 	if (direction) {
@@ -193,6 +193,13 @@ function color_square(row, direction) {
 			list[0].classList.remove("on");
 }
 	}
+}
+
+for (let i = 0; i <= 6; ++i) {
+	color_square(0, 1);
+	color_square(1, 1);
+	color_square(2, 1);
+	color_square(3, 1);
 }
 
 function ch_harmony(number, direction) {
