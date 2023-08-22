@@ -110,6 +110,32 @@
 		color: #00eeff;
 		transition: color 0s;
 	}
+
+	.con {
+		padding: 0;
+		margin: 0;
+		width: calc(var(--key-scale));
+		height: calc(var(--key-scale));
+		display: flex;
+	}
+
+	.r0 {
+		--color: #e8e8ff;
+	}
+	.r1 {
+		--color: #e4ffe4;
+	}
+	.r2 {
+		--color: #ffd;
+	}
+	.r3 {
+		--color: #ffe9e9;
+	}
+
+	.on {
+		background: var(--color);
+	}
+
 </style>
 
 <body>
@@ -146,6 +172,48 @@
 		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though. Safari 15.2 is needed for SharedArrayBuffers.";
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
+
+
+let colors = [6, 6, 6, 6];
+
+function color_square(row, direction) {
+	if (direction) {
+		colors[row] += 1;
+		let n = colors[row];
+		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+		if (list.length)
+			list[0].classList.add("on");
+	}
+	else {
+		let n = colors[row];
+		colors[row] -= 1;
+		if (n >= 0)
+{		var list = document.getElementsByClassName("r" + row.toString() + " p" + n.toString());
+		if (list.length)
+			list[0].classList.remove("on");
+}
+	}
+}
+
+function ch_harmony(number, direction) {
+	while (number % 2 == 0) {
+		number /= 2;
+		color_square(0, direction);
+	}
+	while (number % 3 == 0) {
+		number /= 3;
+		color_square(0, direction);
+	}
+	while (number % 5 == 0) {
+		number /= 3;
+		color_square(0, direction);
+	}
+	while (number % 7 == 0) {
+		number /= 7;
+		color_square(0, direction);
+	}
+}
+
 
 	function interruptible_beep(frequency, volume = 1.0, type = 'sine') {
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
@@ -238,6 +306,8 @@
 		let i = parseInt(t.textContent.substr(0, 1));
 		let j = parseInt(t.textContent.substr(2, 1));
 		adjust_harmony(i / j);
+		ch_harmony(i, 1);
+		ch_harmony(j, 0);
 	}
 
 	addEventListener("keydown", (e) => {
