@@ -174,7 +174,6 @@
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
-
 	let colors = [-1, -1, -1, -1];
 
 	function color_square(row, direction) {
@@ -303,7 +302,29 @@
 		}
 	}
 	reset_frequency();
-
+	function gcd(a, b) {
+		if (b == 0) return a;
+		return gcd(b, a % b);
+	}
+	function fraction_multiply(a, b){
+		let n = a[0] * b[0];
+		let d = a[1] * b[1];
+		let gcdnd = gcd(n, d);
+		return [n / gcdnd, d / gcdnd];
+	}
+	function multiply_all_green_keys(t, down) {
+		let r = fraction_on_key(t);
+		if (down === 0) {
+			let temp = r[0];
+			r[0] = r[1];
+			r[1] = temp;
+		}
+		for (g in document.getElementsByClassName("keyg")) {
+			let f = fraction_on_key(g);
+			let new_fraction = fraction_multiply(f, r);
+			g.textContent = new_fraction[0].toString() + "/" + new_fraction[1].toString();
+		}
+	}
 
 	function adjust_harmony(i) {
 		base_frequency *= i;
@@ -329,7 +350,6 @@
 			return;
 		stop_beep(handle);
 	}
-
 
 	function downpress(t) {
 		t.classList.add("depress");
@@ -363,7 +383,7 @@
 			release(t);
 		}
 		else if (t.classList.contains("keyb")) {
-			adjust_purple(t, false);
+			multiply_all_green_keys(t, 0);
 			release(t);
 		}
 	}
@@ -375,8 +395,13 @@
 			downpress(t);
 			return true;
 		}
-		else if (t.classList.contains("keyp") || t.classList.contains("keyb")) {
+		else if (t.classList.contains("keyp")) {
 			adjust_purple(t, true);
+			downpress(t);
+			return true;
+		}
+		else if (t.classList.contains("keyb")) {
+			multiply_all_green_keys(t, 1);
 			downpress(t);
 			return true;
 		}
