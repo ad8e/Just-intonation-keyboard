@@ -286,7 +286,7 @@
 		recording_start = 0;
 	}
 	function start_recording() {
-		comp.value = "";
+		comp.value = "s0.00001";
 		stop_recording();
 		recording = true;
 	}
@@ -360,7 +360,6 @@
 				let duration = Math.round(100 * (time - time_start)).toString();
 				comp.value += "-[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
 				delete recording_holder[id];
-
 			}
 		}
 
