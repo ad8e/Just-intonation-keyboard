@@ -180,14 +180,14 @@
 	let colors = [5, 5, 5, 5]; //anything but 6
 	let colors_excluding_blue_keys = [5, 5, 5, 5];
 
-	function color_square(row, direction, is_blue) {
+	function color_square(row, change, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
 		if (list.length)
 			list[0].classList.remove("on");
 
-		colors[row] += direction ? 1 : -1;
+		colors[row] += change;
 		if (is_blue === 0)
-			colors_excluding_blue_keys[row] += direction ? 1 : -1;
+			colors_excluding_blue_keys[row] += change;
 
 		if (colors[row] >= 0) {
 			var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
@@ -197,21 +197,22 @@
 	}
 
 	function ch_harmony(number, direction, is_blue) {
+		let pm1 = direction ? 1 : -1;
 		while (number % 2 == 0) {
 			number /= 2;
-			color_square(0, direction, is_blue);
+			color_square(0, pm1, is_blue);
 		}
 		while (number % 3 == 0) {
 			number /= 3;
-			color_square(1, direction, is_blue);
+			color_square(1, pm1, is_blue);
 		}
 		while (number % 5 == 0) {
 			number /= 5;
-			color_square(2, direction, is_blue);
+			color_square(2, pm1, is_blue);
 		}
 		while (number % 7 == 0) {
 			number /= 7;
-			color_square(3, direction, is_blue);
+			color_square(3, pm1, is_blue);
 		}
 	}
 
@@ -393,8 +394,7 @@
 	function reset_frequency() {
 		base_frequency = 82.5;
 		for (let r = 0; r < 4; ++r) {
-			while (colors[r] != 6)
-				color_square(r, colors[r] <= 6, 0);
+			color_square(r, 6 - colors[r], 0);
 		}
 	}
 	reset_frequency();
