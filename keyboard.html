@@ -177,15 +177,17 @@
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
+	let colors_excluding_blue_keys = [5, 5, 5, 5];
 	let colors = [5, 5, 5, 5]; //anything but 6
-	//let colors_including_blue_keys = [5, 5, 5, 5];
 
-	function color_square(row, direction) {
+	function color_square(row, direction, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
 		if (list.length)
 			list[0].classList.remove("on");
 
 		colors[row] += direction ? 1 : -1;
+		if (!is_blue)
+			colors_excluding_blue_keys[row] += direction ? 1 : -1;
 
 		if (colors[row] >= 0) {
 			var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
@@ -197,19 +199,19 @@
 	function ch_harmony(number, direction) {
 		while (number % 2 == 0) {
 			number /= 2;
-			color_square(0, direction);
+			color_square(0, direction, 0);
 		}
 		while (number % 3 == 0) {
 			number /= 3;
-			color_square(1, direction);
+			color_square(1, direction, 0);
 		}
 		while (number % 5 == 0) {
 			number /= 5;
-			color_square(2, direction);
+			color_square(2, direction, 0);
 		}
 		while (number % 7 == 0) {
 			number /= 7;
-			color_square(3, direction);
+			color_square(3, direction, 0);
 		}
 	}
 
@@ -264,9 +266,9 @@
 			let d = 1;
 			let primes = [2, 3, 5, 7];
 			for (let i = 0; i < 4; ++i) {
-				if (colors[i] < 6)
-					d *= primes[i] ** (6 - colors[i]);
-				else n *= primes[i] ** (colors[i] - 6);
+				if (colors_excluding_blue_keys[i] < 6)
+					d *= primes[i] ** (6 - colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** (colors_excluding_blue_keys[i] - 6);
 			}
 			return [n, d];
 		}
@@ -275,9 +277,9 @@
 			let d = 1n;
 			let primes = [2n, 3n, 5n, 7n];
 			for (let i = 0; i < 4; ++i) {
-				if (colors[i] < 6)
-					d *= primes[i] ** BigInt(6 - colors[i]);
-				else n *= primes[i] ** BigInt(colors[i] - 6);
+				if (colors_excluding_blue_keys[i] < 6)
+					d *= primes[i] ** BigInt(6 - colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** BigInt(colors_excluding_blue_keys[i] - 6);
 			}
 			return [n, d];
 		}
@@ -392,7 +394,7 @@
 		base_frequency = 82.5;
 		for (let r = 0; r < 4; ++r) {
 			while (colors[r] != 6)
-				color_square(r, colors[r] <= 6);
+				color_square(r, colors[r] <= 6, 0);
 		}
 	}
 	reset_frequency();
