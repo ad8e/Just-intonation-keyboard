@@ -273,6 +273,12 @@
 		return [n / gcdnd, d / gcdnd];
 	}
 
+	function fraction_to_string(a){
+			if (Number(a[1]) !== 1)
+				return a[0].toString() + "/" + a[1].toString();
+			else
+				return a[0].toString();
+	}
 
 	function stop_recording() {
 		recording = false;
@@ -343,9 +349,16 @@
 		struct_of_stuff = beep_holder[id];
 
 		if (recording) {
-			let time = performance.now();
-			const [time_start, rational] = recording_holder[id];
-			comp.value += "[test]";
+			if (recording_holder[id] === undefined){
+				console.log("up stroke with no down stroke. could happen if you're starting recording in the middle of a note");
+			}
+			else {
+				let time = performance.now();
+				const [time_start, rational] = recording_holder[id];
+				comp.value += "[[t" + (time_start - recording_start).toString() + " >-t" +(time - time_start).toString() + "-" + fraction_to_string(rational) +"]"
+				delete recording_holder[id];
+
+			}
 		}
 
 		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
@@ -380,10 +393,7 @@
 		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
-			if (Number(new_fraction[1]) !== 1)
-				g.textContent = new_fraction[0].toString() + "/" + new_fraction[1].toString();
-			else
-				g.textContent = new_fraction[0].toString();
+			g.textContent = fraction_to_string(new_fraction);
 		});
 	}
 
