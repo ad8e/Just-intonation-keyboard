@@ -233,8 +233,57 @@
 		}
 	}
 
-	//todo: write to console
-	function interruptible_beep(rational, volume = 1.0, type = 'sine') {
+	let recording = false;
+	let recording_holder = [];
+	let recording_start = 0;
+
+	function colors_to_primes() {
+		if (typeof BigInt === 'undefined') {
+			let n = 1;
+			let d = 1;
+			let primes = [2, 3, 5, 7];
+			for (let i = 0; i < 4; ++i) {
+				if (colors[i] < 6)
+					d *= primes[i] ** (6 - colors[i]);
+				else n *= primes[i] ** (colors[i] - 6);
+			}
+		}
+		else {
+			let n = 1n;
+			let d = 1n;
+			let primes = [2n, 3n, 5n, 7n];
+			for (let i = 0; i < 4; ++i) {
+				if (colors[i] < 6)
+					d *= primes[i] ** BigInt(6 - colors[i]);
+				else n *= primes[i] ** BigInt(colors[i] - 6);
+			}
+		}
+	}
+
+	function gcd(a, b) {
+		if (b == 0) return a;
+		return gcd(b, a % b);
+	}
+	function fraction_multiply(a, b){
+		let n = a[0] * b[0];
+		let d = a[1] * b[1];
+		let gcdnd = gcd(n, d);
+		return [n / gcdnd, d / gcdnd];
+	}
+
+
+	function stop_recording() {
+		recording = false;
+		recording_holder = [];
+		recording_start = 0;
+	}
+	function start_recording() {
+		stop_recording();
+		recording = true;
+	}
+
+	function interruptible_beep(t, volume = 1.0, type = 'sine') {
+		let rational = fraction_on_key(t);
 		let frequency = base_frequency;
 		if (typeof BigInt === 'undefined') {
 			frequency *= rational[0] / rational[1];
@@ -242,6 +291,15 @@
 		else {
 			frequency *= Number(rational[0] * 1000000n / rational[1]) / 1000000;
 		}
+		if (recording) {
+			let id = t.id;
+			let time = performance.now();
+			recording_holder[id] = [performance.now(), fraction_multiply(rational, colors_to_primes())];
+			if (recording_start == 0)
+				recording_start = time;
+		}
+
+
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
 			return incrementor_for_IDs;
@@ -281,6 +339,13 @@
 
 	function stop_beep(handle) {
 		struct_of_stuff = beep_holder[handle];
+
+		if (recording) {
+			let time = performance.now();
+			const [time_start, rational] =recording_holder[id];
+			comp.value += "[test]";
+		}
+
 		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
 			Module._mute_interruptible_note(struct_of_stuff);
 			return;
@@ -302,16 +367,7 @@
 		}
 	}
 	reset_frequency();
-	function gcd(a, b) {
-		if (b == 0) return a;
-		return gcd(b, a % b);
-	}
-	function fraction_multiply(a, b){
-		let n = a[0] * b[0];
-		let d = a[1] * b[1];
-		let gcdnd = gcd(n, d);
-		return [n / gcdnd, d / gcdnd];
-	}
+
 	function multiply_all_green_keys(t, down) {
 		let r = fraction_on_key(t);
 		if (down === 0) {
@@ -341,11 +397,10 @@
 	}
 
 	function numerator_down(t) {
-		let i = fraction_on_key(t);
 		let handle = t.id;
 		if (beep_holder[handle] !== undefined)
 			stop_beep(handle);
-		beep_holder[handle] = interruptible_beep(i);
+		beep_holder[handle] = interruptible_beep(t);
 	}
 	function button_up(t) {
 		let handle = t.id;
