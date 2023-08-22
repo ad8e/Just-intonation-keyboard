@@ -247,6 +247,7 @@
 					d *= primes[i] ** (6 - colors[i]);
 				else n *= primes[i] ** (colors[i] - 6);
 			}
+			return [n, d];
 		}
 		else {
 			let n = 1n;
@@ -257,6 +258,7 @@
 					d *= primes[i] ** BigInt(6 - colors[i]);
 				else n *= primes[i] ** BigInt(colors[i] - 6);
 			}
+			return [n, d];
 		}
 	}
 
