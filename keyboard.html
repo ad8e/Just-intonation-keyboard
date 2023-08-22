@@ -406,8 +406,7 @@
 			r[0] = r[1];
 			r[1] = temp;
 		}
-		ch_harmony(r[0], 1, 1);
-		ch_harmony(r[1], 0, 1);
+		adjust_purple(t, 1, 1);
 		document.querySelectorAll('.keyg').forEach(function(g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
@@ -446,18 +445,18 @@
 		t.classList.remove("depress");
 	}
 
-	function adjust_purple(t, direction) {
+	function adjust_purple(t, direction, is_blue) {
 		const [i_, j_] = fraction_on_key(t);
 		i = Number(i_);
 		j = Number(j_);
 		if (direction) {
-			ch_harmony(i, 1, 0);
-			ch_harmony(j, 0, 0);
+			ch_harmony(i, 1, is_blue);
+			ch_harmony(j, 0, is_blue);
 			adjust_harmony(i / j); //adjust after changing colors - it might reset
 		}
 		else {
-			ch_harmony(i, 0, 0);
-			ch_harmony(j, 1, 0);
+			ch_harmony(i, 0, is_blue);
+			ch_harmony(j, 1, is_blue);
 			adjust_harmony(j / i); //adjust after changing colors - it might reset
 		}
 	}
@@ -484,7 +483,7 @@
 			return true;
 		}
 		else if (t.classList.contains("keyp")) {
-			adjust_purple(t, true);
+			adjust_purple(t, true, 0);
 			downpress(t);
 			return true;
 		}
