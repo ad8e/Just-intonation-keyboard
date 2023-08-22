@@ -186,8 +186,9 @@
 			list[0].classList.remove("on");
 
 		colors[row] += direction ? 1 : -1;
-		if (!is_blue)
+		if (is_blue === 0)
 			colors_excluding_blue_keys[row] += direction ? 1 : -1;
+		console.log(colors);
 
 		if (colors[row] >= 0) {
 			var list = document.getElementsByClassName("r" + row.toString() + " p" + colors[row].toString());
