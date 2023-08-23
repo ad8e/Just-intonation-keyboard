@@ -635,6 +635,39 @@
 			t.dispatchEvent(upEvent);
 		}
 	}
+
+	function color_of_multiple(number) {
+		let two = 0, three = 0, five = 0, seven = 0;
+		while (number % 2 == 0) {
+			number /= 2;
+			++two;
+		}
+		while (number % 3 == 0) {
+			number /= 3;
+			++three;
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			++five;
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			++seven;
+		}
+		return [two, three, five, seven];
+	}
+
+	{
+		let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
+		for (let i = 0; i < keymultiples.length; ++i) {
+			let powers = color_of_multiple(number);
+			let color = (5 * powers[2]).toString(16) + (5 * powers[1]).toString(16) + (3 * powers[0]).toString(16);
+			let length = (12 * Math.log(keymultiples) / Math.log(2)).toString();
+			let newDiv = document.createElement("div");
+			newDiv.style="left:calc(var(--w) * " + length + "); background-color: #" + color;
+			colorbar.appendChild(newDiv);
+		}
+	}
 </script>
 </body>
 
