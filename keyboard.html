@@ -537,6 +537,8 @@
 		if (t.hasPointerCapture(id)) {
 			t.releasePointerCapture(id);
 		}
+		if (t.classList.contains("con"))
+			t = t.firstChild;
 		pup(id);
 		pdown(id, t);
 	}); //https://github.com/w3c/pointerevents/issues/359#issuecomment-819828218 "pointerevent listeners are passive by default"
@@ -563,6 +565,9 @@
 		let cached_event = pointerIdsPressed[id];
 		let t = e.target;
 		//console.log("moving over", e);
+
+		if (t.classList.contains("con"))
+			t = t.firstChild;
 
 		if (t !== cached_event) {
 			pup(id);
