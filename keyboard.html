@@ -245,7 +245,7 @@
 		recordbutton.textContent = "⏺ Record";
 	}
 	function start_recording() {
-		comp.value = "-s0.00001";
+		comp.value = "-s0.0001"; //100
 		stop_recording();
 		recordbutton.textContent = "Recording:";
 		recording = true;
@@ -311,7 +311,7 @@
 			frequency *= rational[0] / rational[1];
 		}
 		else {
-			frequency *= Number(rational[0] * 1000000n / rational[1]) / 1000000;
+			frequency *= Number(rational[0] * 100000n / rational[1]) / 100000;
 		}
 		if (recording) {
 			let id = t.id;
@@ -369,8 +369,8 @@
 			else {
 				let time = performance.now();
 				const [time_start, rational] = recording_holder[id];
-				let time_from_start = Math.round(100 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 10 us is good enough
-				let duration = Math.round(100 * (time - time_start)).toString();
+				let time_from_start = Math.round(10 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 0.1 ms is good enough. also tied to: 10000n, and s0.0001
+				let duration = Math.round(10 * (time - time_start)).toString();
 				comp.value += "-[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
 				delete recording_holder[id];
 			}
