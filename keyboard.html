@@ -155,7 +155,6 @@
 <script>let Module = undefined;</script></main>
 
 
-<script src="unmute.js"></script>
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) { reset_frequency(); Module._play_string_keyboard(stringToNewUTF8(str)); }
@@ -245,7 +244,7 @@
 		recordbutton.textContent = "⏺ Record";
 	}
 	function start_recording() {
-		comp.value = "-s0.0001"; //100
+		comp.value = "-s0.0001";
 		stop_recording();
 		recordbutton.textContent = "Recording:";
 		recording = true;
@@ -369,7 +368,7 @@
 			else {
 				let time = performance.now();
 				const [time_start, rational] = recording_holder[id];
-				let time_from_start = Math.round(10 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 0.1 ms is good enough. also tied to: 10000n, and s0.0001
+				let time_from_start = Math.round(10 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 0.1 ms is good enough. and less text is better. also tied to: 10000n, and s0.0001
 				let duration = Math.round(10 * (time - time_start)).toString();
 				comp.value += "-[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
 				delete recording_holder[id];
