@@ -141,7 +141,7 @@
 	}
 	#piano {
 		--w: calc(var(--key-scale) * 0.125);
-		height: 3vh;
+		height: calc(var(--key-scale) * 0.12);
 		width: 100vw;
 		margin-top: 0;
 	}
@@ -149,7 +149,7 @@
 	.bkey{
 		background: black;
 		width: var(--w);
-		height: 1vh;
+		height: calc(var(--key-scale) * 0.04);
 		position: absolute;
 		margin-top: 0;
 		overflow: hidden;
@@ -159,9 +159,9 @@
 	.ckey{
 		background: blue;
 		width: var(--w);
-		height: 2vh;
+		height: calc(var(--key-scale) * 0.08);
 		position: absolute;
-		margin-top: 1vh;
+		margin-top: calc(var(--key-scale) * 0.04);
 		overflow: hidden;
 		display: inline-block;
 	}
