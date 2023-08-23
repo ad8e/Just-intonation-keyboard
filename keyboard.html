@@ -219,6 +219,14 @@
 	let colors = [0, 0, 0, 0];
 	let colors_excluding_blue_keys = [0, 0, 0, 0];
 
+	function set_keyboard_position() {
+		let rounding_adjust = (Math.log2(3) - 19) * colors[1] + (Math.log2(5) - 28) * colors[2] + (Math.log2(7) - 34) * colors[3];
+		rounding_adjust *= 12;
+		let position_Db = 0.5 + 12 * 4 + 3 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
+		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
+		let position_1 = 12 * Math.log2(freq / 660);
+		colorbar.style.left = "calc(50% - 2.5% + var(--w) *" + position_1.toString() + ")";
+	}
 	function color_square(row, change, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
 		if (list.length)
@@ -233,7 +241,9 @@
 			if (list.length)
 				list[0].classList.add("on");
 		}
+		set_keyboard_position(); //todo: maybe called too much?
 	}
+
 
 	function ch_harmony(number, direction, is_blue) {
 		let pm1 = direction ? 1 : -1;
@@ -651,11 +661,33 @@
 			t.dispatchEvent(upEvent);
 		}
 	}
+function count_primes(number) {
+	let two = 0, three = 0, five = 0, seven = 0;
+	while (number % 2 == 0) {
+		number /= 2;
+		++two;
+	}
+	while (number % 3 == 0) {
+		number /= 3;
+		++three;
+	}
+	while (number % 5 == 0) {
+		number /= 5;
+		++five;
+	}
+	while (number % 7 == 0) {
+		number /= 7;
+		++seven;
+	}
+	return [two, three, five, seven];
+}
+
+
 
 	{
 		let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
 		for (let i = 0; i < keymultiples.length; ++i) {
-			let length = (12 * Math.log(keymultiples[i]) / Math.log(2)).toString();
+			let length = (12 * Math.log2(keymultiples[i])).toString();
 			let newDiv = document.createElement("div");
 			newDiv.classList.add('ckey');
 			newDiv.textContent = keymultiples[i].toString();
