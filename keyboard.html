@@ -154,7 +154,7 @@
 	}
 
 	.ckey{
-		width: 5%;
+		width: 6vw; /*5% doesn't work, it gives 0*/
 		height: calc(var(--key-scale) * 0.08);
 		font-size: calc(var(--key-scale) * 0.2);
 		position: absolute;
@@ -226,7 +226,7 @@
 		let position_Db = 0.5 + 12 * 4 + 3 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
 		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
 		let position_1 = 12 * Math.log2(base_frequency / 660);
-		colorbar.style.left = "calc(50% - 2.5% + var(--w) *" + position_1.toString() + ")";
+		colorbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")";
 	}
 	function color_square(row, change, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
