@@ -664,6 +664,7 @@
 			let color = (5 * powers[2]).toString(16) + (5 * powers[1]).toString(16) + (3 * powers[0]).toString(16);
 			let length = (12 * Math.log(keymultiples[i]) / Math.log(2)).toString();
 			let newDiv = document.createElement("div");
+			newDiv.class = "ckey";
 			newDiv.style="left:calc(var(--w) * " + length + "); background-color: #" + color;
 			colorbar.appendChild(newDiv);
 		}
