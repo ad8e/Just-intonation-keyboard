@@ -564,8 +564,9 @@
 		let id = e.pointerId;
 		let cached_event = pointerIdsPressed[id];
 		let t = e.target;
-		console.log("moving over", t);
 
+		if (t.classList === undefined) //HTMLDocument avoidance
+			return;
 		if (t.classList.contains("con"))
 			t = t.firstChild;
 
