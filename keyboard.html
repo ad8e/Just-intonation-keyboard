@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A novel keyboard for music</title>
 <style>
-	/* fork of https://kennethfriedman.org/thoughts/2019/marginal-notes/ */
 	body {
 		font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
 	}
@@ -173,7 +172,7 @@
 
 	if (typeof SharedArrayBuffer === 'undefined' && typeof Module !== 'undefined') {
 		let p = document.createElement("p");
-		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though. Safari 15.2 is needed for SharedArrayBuffers.";
+		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though. This is only a problem for Safari versions below 15.2.";
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
