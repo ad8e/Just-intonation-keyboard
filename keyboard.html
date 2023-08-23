@@ -221,8 +221,7 @@
 	let colors_excluding_blue_keys = [0, 0, 0, 0];
 
 	function set_keyboard_position() {
-		let rounding_adjust = (Math.log2(3) - 19) * colors[1] + (Math.log2(5) - 28) * colors[2] + (Math.log2(7) - 34) * colors[3];
-		rounding_adjust *= 12;
+		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
 		let position_Db = 0.5 + 12 * 4 + 3 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
 		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
 		let position_1 = 12 * Math.log2(base_frequency / 660);
