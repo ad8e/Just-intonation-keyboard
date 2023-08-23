@@ -658,11 +658,15 @@
 	}
 
 	function scale_01_to(input, limit) {
-	let n = Math.round(input * limit);
-	if (n < 0) return 0;
-	if (n > limit) return limit;
-	return n;
-}
+		let n = Math.floor(input * limit + 0.5); //"Math.round(x) is not exactly the same as Math.floor(x + 0.5). When x is -0, or -0.5 ≤ x < 0, Math.round(x) returns -0, while Math.floor(x + 0.5) returns 0."
+		if (n < 0) return 0;
+		if (n > limit) return limit;
+		return n;
+	}
+
+	function two_char_hex_string(val) {
+		return ('00' + value.toString(16)).slice(-2);
+	}
 
 
 	function linear_rgb_to_sRGB(RGB) {
@@ -697,7 +701,7 @@
 		for (let i = 0; i < keymultiples.length; ++i) {
 			let powers = count_primes(keymultiples[i]);
 			let color = linear_rgb_to_sRGB(oklab_to_linear_srgb(powers[0] / 10 + 0.5, powers[1] / 3, powers[2]));
-			let color_string = color[0].toString(16) + color[1].toString(16) + color[2].toString(16);
+			let color_string = two_char_hex_string(color[0]) + two_char_hex_string(color[1]) + two_char_hex_string(color[2]);
 			console.log(color_string);
 			let length = (12 * Math.log(keymultiples[i]) / Math.log(2)).toString();
 			let newDiv = document.createElement("div");
