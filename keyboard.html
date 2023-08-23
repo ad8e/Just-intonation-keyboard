@@ -46,6 +46,9 @@
 		user-select: none;
 		overflow-x: hidden;
 		overflow-y: visible;
+
+		--w: calc(var(--key-scale) / 6);
+		height: calc(var(--key-scale) * 0.12);
 	}
 
 	.flex-h {
@@ -139,12 +142,6 @@
 
 	.on {
 		background: var(--color);
-	}
-	#piano {
-		--w: calc(var(--key-scale) / 6);
-		height: calc(var(--key-scale) * 0.12);
-		width: 100vw;
-		margin-top: 0;
 	}
 
 	.bkey{
