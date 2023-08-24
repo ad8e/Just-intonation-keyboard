@@ -208,12 +208,7 @@
 
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
-	function play_on_keyboard(str) {
-		frequency_guardrails = false;
-		reset_frequency();
-		Module._play_string_keyboard(stringToNewUTF8(str));
-		frequency_guardrails = true;
-	}
+	function play_on_keyboard(str) { reset_frequency(); Module._play_string_keyboard(stringToNewUTF8(str)); }
 
 	//license for keyboard: 0BSD
 	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
@@ -495,7 +490,6 @@
 		});
 		adjust_purple(t, down, 1); //after the fraction changes on the green keys. this modifies the piano absolute position visualization
 	}
-	let frequency_guardrails = true;
 
 	function adjust_harmony(i) {
 		base_frequency *= i;
@@ -503,7 +497,7 @@
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
 		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
-		if (frequency_guardrails && (base_frequency < 10 || base_frequency > 331)) {
+		if (base_frequency < 10 || base_frequency > 331) {
 			reset_frequency();
 		}
 	}
