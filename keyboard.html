@@ -540,17 +540,16 @@
 	}
 
 	function button_up_wrapper(t) {
+		if (t.classList.contains("depress"))
+			release(t);
+		else return;
 		if (t.classList.contains("keyg")) {
 			button_up(t);
-			release(t);
 		}
-		else if (t.classList.contains("keyp")) {
-			release(t);
-		}
+		//else if (t.classList.contains("keyp")) {
+		//}
 		else if (t.classList.contains("keyb")) {
-			if (t.classList.contains("depress"))
-				multiply_all_green_keys(t, 0);
-			release(t);
+			multiply_all_green_keys(t, 0);
 		}
 	}
 
