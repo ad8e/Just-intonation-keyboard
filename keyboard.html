@@ -548,7 +548,8 @@
 			release(t);
 		}
 		else if (t.classList.contains("keyb")) {
-			multiply_all_green_keys(t, 0);
+			if (t.classList.contains("depress"))
+				multiply_all_green_keys(t, 0);
 			release(t);
 		}
 	}
