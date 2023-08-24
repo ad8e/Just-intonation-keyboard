@@ -497,7 +497,7 @@
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
 		//I changed it to 1/8 and 4. because it's causing trouble for Passepied
-		//now 1/16 and 4...30/4 near the end is brutal. it's forced that way thanks to prevent-repeat
+		//30/4 near the end of passepied is brutal. it's forced that way thanks to prevent-repeat
 		if (base_frequency < 10 || base_frequency > 331) {
 			reset_frequency();
 		}
@@ -717,21 +717,15 @@
 		return [two, three, five, seven];
 	}
 
-
-
-	{
-		let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
-		for (let i = 0; i < keymultiples.length; ++i) {
-			let length = (12 * Math.log2(keymultiples[i])).toString();
-			let newDiv = document.createElement("div");
-			newDiv.classList.add('ckey');
-			newDiv.textContent = keymultiples[i].toString();
-			newDiv.style = "left:calc(var(--w) * " + length + ")";
-			colorbar.appendChild(newDiv);
-		}
+	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
+	for (let i = 0; i < keymultiples.length; ++i) {
+		let length = (12 * Math.log2(keymultiples[i])).toString();
+		let newDiv = document.createElement("div");
+		newDiv.classList.add('ckey');
+		newDiv.textContent = keymultiples[i].toString();
+		newDiv.style = "left:calc(var(--w) * " + length + ")";
+		colorbar.appendChild(newDiv);
 	}
-
-//start at E. figure out the key positions
 </script>
 </body>
 
