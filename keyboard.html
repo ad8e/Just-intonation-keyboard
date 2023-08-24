@@ -391,9 +391,9 @@
 			newDiv.classList.add('abs');
 
 			let frac1 = fraction_on_key(t);
-			let position_1 = 12 * Math.log2(relative * base_frequency / 82.5) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
+			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
 			newDiv.style="left:calc(3vw + var(--w) * " + position_1 + ")";
-			colorbar.prepend(newDiv);
+			absoluteholder.prepend(newDiv);
 			absolute_position_holder[t.id] = newDiv;
 		}
 
