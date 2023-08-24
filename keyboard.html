@@ -388,7 +388,7 @@
 			let newDiv = document.createElement("div");
 			newDiv.classList.add('abs');
 			//newDiv.style="left:calc(var(--w) * " + length + ")";
-			colorbar.prepend();
+			colorbar.prepend(newDiv);
 		}
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
