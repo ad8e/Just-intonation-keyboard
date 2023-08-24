@@ -235,9 +235,9 @@
 		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
 		let frac1 = fraction_on_key(document.getElementById('ShiftRight'));
 		let adjust_blue = Number(frac1[0]) / Number(frac1[1]);
-		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660) - 0.5;
+		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660);
 
-		colorbar.style.left = "calc(50% + var(--w) *" + position_1.toString() + ")";
+		colorbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")";
 	}
 	function color_square(row, change, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
@@ -391,8 +391,8 @@
 			newDiv.classList.add('abs');
 
 			let frac1 = fraction_on_key(t);
-			let position_1 = 12 * Math.log2(relative * base_frequency / 660) + 36 + 3; //0.5 is because it's to the left border, and it's 1 thick
-			newDiv.style="left:calc(3vw + var(--w) * " + position_1 + ")";
+			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
+			newDiv.style="left:calc(50% + var(--w) * " + position_1 + ")";
 			absoluteholder.prepend(newDiv);
 			absolute_position_holder[t.id] = newDiv;
 		}
