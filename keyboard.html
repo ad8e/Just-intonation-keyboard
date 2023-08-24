@@ -174,7 +174,7 @@
 		--w: calc(var(--key-scale) / 6);
 	}
 
-	#colorbar, #piano {
+	#colorbar, #piano, #absoluteholder {
 		margin: 0;
 		position: absolute;
 	}
@@ -392,7 +392,7 @@
 
 			let frac1 = fraction_on_key(t);
 			let position_1 = 12 * Math.log2(relative) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
-			newDiv.style="left:calc(3vw + var(--w) * " + position_1 + ")";
+			newDiv.style="left:calc(3vw + var(--w) * " + position_1 + ")"; //3vw is because the text box is 6vw thick, so go forward 3
 			colorbar.prepend(newDiv);
 			absolute_position_holder[t.id] = newDiv;
 		}
