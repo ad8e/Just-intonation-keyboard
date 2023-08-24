@@ -555,6 +555,8 @@
 
 	//returns true if pressed
 	function button_down_wrapper(t) {
+		if (t.classList.contains("depress"))
+			button_up_wrapper(t);
 		if (t.classList.contains("keyg")) {
 			numerator_down(t);
 			downpress(t);
@@ -622,7 +624,7 @@
 		}
 		if (t.classList.contains("con"))
 			t = t.firstChild;
-		pup(id);
+		//pup(id);
 		pdown(id, t);
 	}); //https://github.com/w3c/pointerevents/issues/359#issuecomment-819828218 "pointerevent listeners are passive by default"
 
@@ -654,7 +656,7 @@
 			t = t.firstChild;
 
 		if (t !== cached_event) {
-			pup(id);
+			//pup(id);
 			pdown(id, t);
 		}
 	});
