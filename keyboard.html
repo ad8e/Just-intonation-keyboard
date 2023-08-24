@@ -350,18 +350,18 @@
 		if (b == 0) return a;
 		return gcd(b, a % b);
 	}
-	function fraction_multiply(a, b){
+	function fraction_multiply(a, b) {
 		let n = a[0] * b[0];
 		let d = a[1] * b[1];
 		let gcdnd = gcd(n, d);
 		return [n / gcdnd, d / gcdnd];
 	}
 
-	function fraction_to_string(a){
-			if (Number(a[1]) !== 1)
-				return a[0].toString() + "/" + a[1].toString();
-			else
-				return a[0].toString();
+	function fraction_to_string(a) {
+		if (Number(a[1]) !== 1)
+			return a[0].toString() + "/" + a[1].toString();
+		else
+			return a[0].toString();
 	}
 
 
@@ -375,7 +375,7 @@
 			relative = rational[0] / rational[1];
 		}
 		else {
-			relative= Number(rational[0] * 100000n / rational[1]) / 100000;
+			relative = Number(rational[0] * 100000n / rational[1]) / 100000;
 		}
 		frequency *= relative;
 		if (recording) {
@@ -392,7 +392,7 @@
 
 			let frac1 = fraction_on_key(t);
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
-			newDiv.style="left:calc(50vw + var(--w) * " + position_1 + ")";
+			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
 			absoluteholder.prepend(newDiv);
 			absolute_position_holder[t.id] = newDiv;
 		}
@@ -406,8 +406,8 @@
 
 		if (audioCtx === null) {
 			var AudioContext = window.AudioContext // Default
-		    || window.webkitAudioContext // Safari and old versions of Chrome
-		    || false;
+				|| window.webkitAudioContext // Safari and old versions of Chrome
+				|| false;
 
 			audioCtx = new AudioContext();
 		}
@@ -438,7 +438,7 @@
 		struct_of_stuff = beep_holder[id];
 
 		if (recording) {
-			if (recording_holder[id] === undefined){
+			if (recording_holder[id] === undefined) {
 				console.log("up stroke with no down stroke. could happen if you're starting recording in the middle of a note");
 			}
 			else {
@@ -483,7 +483,7 @@
 			r[0] = r[1];
 			r[1] = temp;
 		}
-		document.querySelectorAll('.keyg').forEach(function(g) {
+		document.querySelectorAll('.keyg').forEach(function (g) {
 			let f = fraction_on_key(g);
 			let new_fraction = fraction_multiply(f, r);
 			g.textContent = fraction_to_string(new_fraction);
@@ -497,7 +497,7 @@
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
 		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
-		if (base_frequency < 10 || base_frequency > 331){
+		if (base_frequency < 10 || base_frequency > 331) {
 			reset_frequency();
 		}
 	}
@@ -682,39 +682,39 @@
 		//else release(t);
 		if (on) {
 			const downEvent = new PointerEvent("pointerdown", {
-			  pointerId: ID,
-			  bubbles: true,
+				pointerId: ID,
+				bubbles: true,
 			});
 			t.dispatchEvent(downEvent);
 		}
 		else {
 			const upEvent = new PointerEvent("pointerup", {
-			  pointerId: ID,
-			  bubbles: true,
+				pointerId: ID,
+				bubbles: true,
 			});
 			t.dispatchEvent(upEvent);
 		}
 	}
-function count_primes(number) {
-	let two = 0, three = 0, five = 0, seven = 0;
-	while (number % 2 == 0) {
-		number /= 2;
-		++two;
+	function count_primes(number) {
+		let two = 0, three = 0, five = 0, seven = 0;
+		while (number % 2 == 0) {
+			number /= 2;
+			++two;
+		}
+		while (number % 3 == 0) {
+			number /= 3;
+			++three;
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			++five;
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			++seven;
+		}
+		return [two, three, five, seven];
 	}
-	while (number % 3 == 0) {
-		number /= 3;
-		++three;
-	}
-	while (number % 5 == 0) {
-		number /= 5;
-		++five;
-	}
-	while (number % 7 == 0) {
-		number /= 7;
-		++seven;
-	}
-	return [two, three, five, seven];
-}
 
 
 
@@ -725,12 +725,12 @@ function count_primes(number) {
 			let newDiv = document.createElement("div");
 			newDiv.classList.add('ckey');
 			newDiv.textContent = keymultiples[i].toString();
-			newDiv.style="left:calc(var(--w) * " + length + ")";
+			newDiv.style = "left:calc(var(--w) * " + length + ")";
 			colorbar.appendChild(newDiv);
 		}
 	}
 
-	//start at E. figure out the key positions
+//start at E. figure out the key positions
 </script>
 </body>
 
