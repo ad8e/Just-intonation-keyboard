@@ -586,6 +586,8 @@
 	});
 
 	addEventListener("keyup", (e) => {
+		if (e.ctrlKey) return;
+		if (e.target.tagName.toUpperCase() === 'INPUT') return;
 		let t = document.getElementById(e.code);
 		if (t === null)
 			return;
