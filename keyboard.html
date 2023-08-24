@@ -387,8 +387,12 @@
 		{
 			let newDiv = document.createElement("div");
 			newDiv.classList.add('abs');
-			//newDiv.style="left:calc(var(--w) * " + length + ")";
+
+			let frac1 = fraction_on_key(t);
+			let position_1 = 12 * Math.log2(frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
+			newDiv.style="left:calc(3vw + var(--w) * " + position_1 + ")";
 			colorbar.prepend(newDiv);
+			absolute_position_holder[t] = newDiv;
 		}
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
@@ -444,6 +448,8 @@
 				delete recording_holder[id];
 			}
 		}
+		absolute_position_holder[t].remove();
+		delete absolute_position_holder[t];
 
 		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
 			Module._mute_interruptible_note(struct_of_stuff);
