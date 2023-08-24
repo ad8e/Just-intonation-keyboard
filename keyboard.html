@@ -184,6 +184,12 @@
 	#piano {
 		top: calc(var(--key-scale)*0.23);
 	}
+	.abs {
+		position: absolute;
+		width: var(--w);
+		height: calc(var(--key-scale)*0.23);
+		background-color: #0ff;
+	}
 </style>
 
 <body>
@@ -359,6 +365,8 @@
 	}
 
 
+	let absolute_position_holder = [];
+
 	function interruptible_beep(t, volume = 1.0, type = 'sine') {
 		let rational = fraction_on_key(t);
 		let frequency = base_frequency;
@@ -376,6 +384,12 @@
 				recording_start = time;
 		}
 
+		{
+			let newDiv = document.createElement("div");
+			newDiv.classList.add('abs');
+			//newDiv.style="left:calc(var(--w) * " + length + ")";
+			colorbar.prepend();
+		}
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
