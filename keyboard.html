@@ -496,8 +496,8 @@
 
 		//safety limiter for people who press random keys. actual musicians will want to disable this
 		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
-		//I changed it to 1/8 and 4. because it's causing trouble for actual songs
-		if (base_frequency < 7 || base_frequency > 331) {
+		//I changed it to 1/8 and 4. because it's causing trouble for Passepied
+		if (base_frequency < 5 || base_frequency > 331) {
 			reset_frequency();
 		}
 	}
