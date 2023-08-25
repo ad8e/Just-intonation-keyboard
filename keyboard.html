@@ -198,14 +198,110 @@
 
 <body>
 	<main id='main'><div class="flex-v" id="keyboard">
-	<div class="flex-h"><div class="keyn" style="width: calc(var(--key-scale) * 0.5)"></div><button class="keyd" disabled>2</button><button class="keyd" disabled>3</button><button class="keyd" disabled>4</button><button class="keyd" disabled>5</button><button class="keyd" disabled>6</button><button class="keyg" id="Digit7">25</button><button class="keyg" id="Digit8">30</button><button class="keyg" id="Digit9">32</button><button class="keyg" id="Digit0">24</button><button class="keyg" id="Minus">18</button><button class="keyg" id="Equal">27</button><div class="keyn" style="width: calc(var(--key-scale) * .25)"></div>
-	</div>
-	<div class="flex-h"><div class="keyn" style="width: calc(var(--key-scale) * 0)"></div><button class="keyp" id='KeyQ'>7/6</button><button class="keyp" id='KeyW'>6/5</button><button class="keyp" id='KeyE'>5/4</button><button class="keyp" id='KeyR'>4/3</button><button class="keyp" id='KeyT'>3/2</button><button class="keyp" id='KeyY'>2/1</button><button class="keyg" id='KeyU'>15</button><button class="keyg" id='KeyI'>20</button><button class="keyg" id='KeyO'>16</button><button class="keyg" id='KeyP'>12</button><button class="keyg" id='BracketLeft'>9</button><div class="keyn" style="width: calc(var(--key-scale) * 0.75)"></div>
-	</div>
-	<div class="flex-h"><div class="keyn" style="width: calc(var(--key-scale) * 0.25)"></div><button class="keyp" id='KeyA'>6/7</button><button class="keyp" id='KeyS'>5/6</button><button class="keyp" id='KeyD'>4/5</button><button class="keyp keybump" id='KeyF'>3/4</button><button class="keyp" id='KeyG'>2/3</button><button class="keyp" id='KeyH'>1/2</button><button class="keyg keybump" id='KeyJ'>14</button><button class="keyg" id='KeyK'>10</button><button class="keyg" id='KeyL'>8</button><button class="keyg" id='Semicolon'>6</button><button class="keyg" id='Quote'>3</button><div class="keyn" style="width: calc(var(--key-scale) * 0.5)"></div>
-	</div>
-	<div class="flex-h"><div class="keyn" style="width: calc(var(--key-scale) * 0.75)"></div><button class="keyd" disabled>Z</button><button class="keyd" disabled>X</button><button class="keyd" disabled>C</button><button class="keyd" disabled>V</button><button class="keyd" disabled>B</button><button class="keyd" disabled>N</button><button class="keyg" id='KeyM'>7</button><button class="keyg" id='Comma'>5</button><button class="keyg" id='Period'>4</button><button class="keyg" id='Slash'>2</button><button class="keyg" id='ShiftRight'>1</button><div class="keyn" style="width: calc(var(--key-scale) * 0)"></div>
-	</div>
+<div class="flex-h">
+<div class='con r0 p1' style="width: calc(var(--key-scale) * 0.5)"><div class="keyn" style="width: calc(var(--key-scale) * 0.4)"></div></div>
+<div class='con r0 p2'><button class="keyb" id="Digit2">6/5</button></div>
+<div class='con r0 p3'><button class="keyb" id="Digit3">5/4</button></div>
+<div class='con r0 p4'><button class="keyb" id="Digit4">4/3</button></div>
+<div class='con r0 p5'><button class="keyb" id="Digit5">3/2</button></div>
+<div class='con r0 p6'><button class="keyb" id="Digit6">2/1</button></div>
+<div class='con r0 p7'><button class="keyg" id="Digit7">25</button></div>
+<div class='con r0 p8'><button class="keyg" id="Digit8">30</button></div>
+<div class='con r0 p9'><button class="keyg" id="Digit9">32</button></div>
+<div class='con r0 p10'><button class="keyg" id="Digit0">24</button></div>
+<div class='con r0 p11'><button class="keyg" id="Minus">18</button></div>
+<div class='con r0 p12'><button class="keyg" id="Equal">27</button></div>
+<div class='con r0 p13' style="width: calc(var(--key-scale) * 0.25)"><div class="keyn" style="width: calc(var(--key-scale) * .15)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r1 p1'><button class="keyp" id='KeyQ'>7/6</button></div>
+<div class='con r1 p2'><button class="keyp" id='KeyW'>6/5</button></div>
+<div class='con r1 p3'><button class="keyp" id='KeyE'>5/4</button></div>
+<div class='con r1 p4'><button class="keyp" id='KeyR'>4/3</button></div>
+<div class='con r1 p5'><button class="keyp" id='KeyT'>3/2</button></div>
+<div class='con r1 p6'><button class="keyp" id='KeyY'>2/1</button></div>
+<div class='con r1 p7'><button class="keyg" id='KeyU'>15</button></div>
+<div class='con r1 p8'><button class="keyg" id='KeyI'>20</button></div>
+<div class='con r1 p9'><button class="keyg" id='KeyO'>16</button></div>
+<div class='con r1 p10'><button class="keyg" id='KeyP'>12</button></div>
+<div class='con r1 p11'><button class="keyg" id='BracketLeft'>9</button></div>
+<div class='con r1 p12' style="width: calc(var(--key-scale) * 0.75)"><div class="keyn" style="width: calc(var(--key-scale) * 0.65)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r2 p0' style="width: calc(var(--key-scale) * 0.25)"><div class="keyn" style="width: calc(var(--key-scale) * 0.15)"></div></div>
+<div class='con r2 p1'><button class="keyp" id='KeyA'>6/7</button></div>
+<div class='con r2 p2'><button class="keyp" id='KeyS'>5/6</button></div>
+<div class='con r2 p3'><button class="keyp" id='KeyD'>4/5</button></div>
+<div class='con r2 p4'><button class="keyp keybump" id='KeyF'>3/4</button></div>
+<div class='con r2 p5'><button class="keyp" id='KeyG'>2/3</button></div>
+<div class='con r2 p6'><button class="keyp" id='KeyH'>1/2</button></div>
+<div class='con r2 p7'><button class="keyg keybump" id='KeyJ'>14</button></div>
+<div class='con r2 p8'><button class="keyg" id='KeyK'>10</button></div>
+<div class='con r2 p9'><button class="keyg" id='KeyL'>8</button></div>
+<div class='con r2 p10'><button class="keyg" id='Semicolon'>6</button></div>
+<div class='con r2 p11'><button class="keyg" id='Quote'>3</button></div>
+<div class='con r2 p12' style="width: calc(var(--key-scale) * 0.5)"><div class="keyn" style="width: calc(var(--key-scale) * 0.4)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r3 p0' style="width: calc(var(--key-scale) * 0.75)"><div class="keyn" style="width: calc(var(--key-scale) * 0.65)"></div></div>
+<div class='con r3 p1'><button class="keyb" id='KeyZ'>6/7</button></div>
+<div class='con r3 p2'><button class="keyb" id='KeyX'>5/6</button></div>
+<div class='con r3 p3'><button class="keyb" id='KeyC'>4/5</button></div>
+<div class='con r3 p4'><button class="keyb" id='KeyV'>3/4</button></div>
+<div class='con r3 p5'><button class="keyb" id='KeyB'>2/3</button></div>
+<div class='con r3 p6'><button class="keyb" id='KeyN'>1/2</button></div>
+<div class='con r3 p7'><button class="keyg" id='KeyM'>7</button></div>
+<div class='con r3 p8'><button class="keyg" id='Comma'>5</button></div>
+<div class='con r3 p9'><button class="keyg" id='Period'>4</button></div>
+<div class='con r3 p10'><button class="keyg" id='Slash'>2</button></div>
+<div class='con r3 p11'><button class="keyg" id='ShiftRight'>1</button></div>
+</div>
+</div>
+<div class="secondcontainer">
+<div id="absoluteholder"></div>
+<div id="colorbar"></div>
+<div id="piano">
+<div class="bkey" style="left:calc(var(--w) * 0)"></div>
+<div class="bkey" style="left:calc(var(--w) * 2)"></div>
+<div class="bkey" style="left:calc(var(--w) * 5)"></div>
+<div class="bkey" style="left:calc(var(--w) * 7)"></div>
+<div class="bkey" style="left:calc(var(--w) * 9)"></div>
+<div class="bkey" style="left:calc(var(--w) * 12)"></div>
+<div class="bkey" style="left:calc(var(--w) * 14)"></div>
+<div class="bkey" style="left:calc(var(--w) * 17)"></div>
+<div class="bkey" style="left:calc(var(--w) * 19)"></div>
+<div class="bkey" style="left:calc(var(--w) * 21)"></div>
+<div class="bkey" style="left:calc(var(--w) * 24)"></div>
+<div class="bkey" style="left:calc(var(--w) * 26)"></div>
+<div class="bkey" style="left:calc(var(--w) * 29)"></div>
+<div class="bkey" style="left:calc(var(--w) * 31)"></div>
+<div class="bkey" style="left:calc(var(--w) * 33)"></div>
+<div class="bkey" style="left:calc(var(--w) * 36)"></div>
+<div class="bkey" style="left:calc(var(--w) * 38)"></div>
+<div class="bkey" style="left:calc(var(--w) * 41)"></div>
+<div class="bkey" style="left:calc(var(--w) * 43)"></div>
+<div class="bkey" style="left:calc(var(--w) * 45)"></div>
+<div class="bkey" style="left:calc(var(--w) * 48)"></div>
+<div class="bkey" style="left:calc(var(--w) * 50)"></div>
+<div class="bkey" style="left:calc(var(--w) * 53)"></div>
+<div class="bkey" style="left:calc(var(--w) * 55)"></div>
+<div class="bkey" style="left:calc(var(--w) * 57)"></div>
+<div class="bkey" style="left:calc(var(--w) * 60)"></div>
+<div class="bkey" style="left:calc(var(--w) * 62)"></div>
+<div class="bkey" style="left:calc(var(--w) * 65)"></div>
+<div class="bkey" style="left:calc(var(--w) * 67)"></div>
+<div class="bkey" style="left:calc(var(--w) * 69)"></div>
+<div class="bkey" style="left:calc(var(--w) * 72)"></div>
+<div class="bkey" style="left:calc(var(--w) * 74)"></div>
+<div class="bkey" style="left:calc(var(--w) * 77)"></div>
+<div class="bkey" style="left:calc(var(--w) * 79)"></div>
+<div class="bkey" style="left:calc(var(--w) * 81)"></div>
+<div class="bkey" style="left:calc(var(--w) * 84)"></div>
+<div class="bkey" style="left:calc(var(--w) * 86)"></div>
+<div class="bkey" style="left:calc(var(--w) * 89)"></div>
+<div class="bkey" style="left:calc(var(--w) * 91)"></div>
+<div class="bkey" style="left:calc(var(--w) * 93)"></div>
+</div>
 </div>
 <script>let Module = undefined;</script></main>
 
