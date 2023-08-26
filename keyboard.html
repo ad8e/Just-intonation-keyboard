@@ -11,7 +11,7 @@
 <style>
 	body {
 		font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-		overflow-x: hidden;
+		overflow-x: hidden; /* necessary on Firefox: clicking inside the input box causes a huge horizontal scrollbar, probably because the keyboard's transform falls apart. also necessary on chrome: 100 vw doesn't consider the scrollbar */
 	}
 
 	main {
@@ -49,7 +49,6 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-		overflow-x: hidden;
 
 		--w: calc(var(--key-scale) / 6);
 	}
