@@ -20,9 +20,8 @@
 		max-width: min(800px, 100%);
 	}
 
-	button:focus, button:hover {
-		outline:none;
-	}
+	/* remove black border on buttons for chrome */
+	.con > button:focus, .con > button:hover { outline:none; }
 
 	a[onclick]:not([href]) {
 		cursor: pointer;
