@@ -318,9 +318,9 @@
 	let audioCtx = null;
 	let incrementor_for_IDs = 1;
 
-	if (typeof SharedArrayBuffer === 'undefined' && typeof Module !== 'undefined') {
+	if (typeof SharedArrayBuffer === 'undefined') { //&& typeof Module !== 'undefined' //I think Module gets loaded later, on non-local webservers. so this leaves some junk in the separate keyboard. let's remove it with sed.
 		let p = document.createElement("p");
-		p.textContent = "Your browser doesn't support SharedArrayBuffers, so the cool player piano and the demos won't work. You can still play the keyboard though. This is only a problem for Safari versions below 15.2.";
+		
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
