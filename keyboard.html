@@ -822,6 +822,13 @@
 		newDiv.style = "left:calc(var(--w) * " + length + ")";
 		colorbar.appendChild(newDiv);
 	}
+
+	function force_lexicographic() {
+		let key_labels = ['ShiftRight', 'Slash', 'Period', 'Comma', 'KeyM', 'KeyN', 'KeyB', 'KeyV', 'KeyC', 'KeyX', 'KeyZ', 'Quote', 'Semicolon', 'KeyL', 'KeyK', 'KeyJ', 'BracketLeft', 'KeyP', 'KeyO', 'KeyI', 'KeyU', 'Equal', 'Minus', 'Digit0', 'Digit9', 'Digit8', 'Digit7'];
+		for (let i = 0; i < keymultiples.length; ++i) {
+			document.getElementById(key_labels[i]).textContent = keymultiples[i].toString();
+		}
+	}
 </script>
 </body>
 
