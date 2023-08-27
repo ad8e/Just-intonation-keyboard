@@ -823,7 +823,10 @@
 		colorbar.appendChild(newDiv);
 	}
 
-	function force_lexicographic() {
+	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
+	//also, it doesn't sound good playing random notes anymore. too many adjacent numbers
+	//not sure if it's worth an option next to the keyboard. maybe somewhere else.
+	function lexicographic_green_keys() {
 		let key_labels = ['ShiftRight', 'Slash', 'Period', 'Comma', 'KeyM', 'Quote', 'Semicolon', 'KeyL', 'KeyK', 'KeyJ', 'BracketLeft', 'KeyP', 'KeyO', 'KeyI', 'KeyU', 'Equal', 'Minus', 'Digit0', 'Digit9', 'Digit8', 'Digit7'];
 		for (let i = 0; i < keymultiples.length; ++i) {
 			document.getElementById(key_labels[i]).textContent = keymultiples[i].toString();
