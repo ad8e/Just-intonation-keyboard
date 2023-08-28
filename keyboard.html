@@ -304,7 +304,13 @@
 
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
-	function play_on_keyboard(str) { reset_frequency(); Module._play_string_keyboard(stringToNewUTF8(str)); }
+	function play_on_keyboard(str) {
+		var residual_green_keys = document.getElementsByClassName("keyg");
+		[].forEach.call(residual_green_keys, function (t) {button_up_wrapper(t);});
+
+		reset_frequency();
+		Module._play_string_keyboard(stringToNewUTF8(str));
+	}
 
 	//license for keyboard: 0BSD
 	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
