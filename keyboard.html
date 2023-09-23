@@ -468,6 +468,8 @@
 
 
 	let absolute_position_holder = [];
+	let blue_square_on_play_div = document.createElement("div");
+	blue_square_on_play_div.classList.add('abs');
 
 	function interruptible_beep(t, volume = 1.0, type = 'sine') {
 		let rational = fraction_on_key(t);
@@ -492,8 +494,9 @@
 		//it costs 10-24 ms latency for 21 keys. to test: press Record, and press the all-notes green button
 		//removing absolute_position_holder causes latency to drop to 4-13 ms.
 		{
-			let newDiv = document.createElement("div");
-			newDiv.classList.add('abs');
+			//let newDiv = document.createElement("div");
+			//newDiv.classList.add('abs');
+			let newDiv = blue_square_on_play_div.cloneNode(false);
 
 			let frac1 = fraction_on_key(t);
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
