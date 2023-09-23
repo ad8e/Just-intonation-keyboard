@@ -488,17 +488,19 @@
 				recording_start = time;
 		}
 
-		//todo, maybe move this after the note plays. something is causing 10-24 ms latency for 21 keys. to test: press Record, and press the all-notes green button
-		//{
-		//	let newDiv = document.createElement("div");
-		//	newDiv.classList.add('abs');
+		//todo, maybe move this after the note plays
+		//it costs 10-24 ms latency for 21 keys. to test: press Record, and press the all-notes green button
+		//removing absolute_position_holder causes latency to drop to 4-13 ms.
+		{
+			let newDiv = document.createElement("div");
+			newDiv.classList.add('abs');
 
-		//	let frac1 = fraction_on_key(t);
-		//	let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
-		//	newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
-		//	absoluteholder.prepend(newDiv);
-		//	absolute_position_holder[t.id] = newDiv;
-		//}
+			let frac1 = fraction_on_key(t);
+			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
+			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
+			absoluteholder.prepend(newDiv);
+			absolute_position_holder[t.id] = newDiv;
+		}
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
@@ -553,8 +555,8 @@
 				delete recording_holder[id];
 			}
 		}
-		//absolute_position_holder[id].remove();
-		//delete absolute_position_holder[id];
+		absolute_position_holder[id].remove();
+		delete absolute_position_holder[id];
 
 		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
 			Module._mute_interruptible_note(struct_of_stuff);
