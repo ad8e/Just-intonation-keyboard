@@ -311,7 +311,7 @@
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) {
 		var residual_green_keys = document.getElementsByClassName("keyg");
-		[].forEach.call(residual_green_keys, function (t) {button_up_wrapper(t);});
+		[].forEach.call(residual_green_keys, function (t) { button_up_wrapper(t); });
 
 		reset_frequency();
 		Module._play_string_keyboard(stringToNewUTF8(str));
@@ -469,42 +469,42 @@
 		let two = 0, three = 0, five = 0, seven = 0;
 
 		if (typeof BigInt === 'undefined') {
-		while (number % 2 == 0) {
-			number /= 2;
-			++two;
+			while (number % 2 == 0) {
+				number /= 2;
+				++two;
+			}
+			while (number % 3 == 0) {
+				number /= 3;
+				++three;
+			}
+			while (number % 5 == 0) {
+				number /= 5;
+				++five;
+			}
+			while (number % 7 == 0) {
+				number /= 7;
+				++seven;
+			}
 		}
-		while (number % 3 == 0) {
-			number /= 3;
-			++three;
-		}
-		while (number % 5 == 0) {
-			number /= 5;
-			++five;
-		}
-		while (number % 7 == 0) {
-			number /= 7;
-			++seven;
-		}
-	}
-	else {
-		while (number % 2n == 0n) {
-			number /= 2n;
-			++two;
-		}
-		while (number % 3n == 0n) {
-			number /= 3n;
-			++three;
-		}
-		while (number % 5n == 0n) {
-			number /= 5n;
-			++five;
-		}
-		while (number % 7n == 0n) {
-			number /= 7n;
-			++seven;
-		}
+		else {
+			while (number % 2n == 0n) {
+				number /= 2n;
+				++two;
+			}
+			while (number % 3n == 0n) {
+				number /= 3n;
+				++three;
+			}
+			while (number % 5n == 0n) {
+				number /= 5n;
+				++five;
+			}
+			while (number % 7n == 0n) {
+				number /= 7n;
+				++seven;
+			}
 
-	}
+		}
 		return [two, three, five, seven];
 	}
 
@@ -929,8 +929,6 @@
 		const device = midiOut[selectDevice.selectedIndex - 1];
 		device.send([status, pitch, velocity]);
 	}
-
-
 
 
 	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
