@@ -304,6 +304,7 @@
 <div class="bkey" style="left:calc(var(--w) * 93)"></div>
 </div>
 </div>
+<select id="selectDevice"></select>
 <script>let Module = undefined;</script></main>
 
 
@@ -567,13 +568,13 @@
 			absolute_position_holder[t.id] = newDiv;
 		}
 
-		let WebMIDIoutput = true;
-		if (WebMIDIoutput) {
+		//any device except the first is a MIDI device
+		if (selectOut.selectedIndex > 0) {
 			//what happens when notes overlap: https://stackoverflow.com/a/69696511/
 			let midi_note_number = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//restricts the range to [0, 127], the midi bound
 			midi_note_number = Math.min(Math.max(midi_note_number, 0), 127);
-			//todo, send midi
+			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is NOTE_ON, 100 is velocity (1 to 127). someone said 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
 			console.log(midi_note_number);
 			return [2, midi_note_number];
 		}
@@ -616,7 +617,7 @@
 	};
 
 	function stop_beep(id) {
-		const [send_type, struct_of_stuff] = beep_holder[id];
+		const [send_type, note_info] = beep_holder[id];
 
 		if (recording) {
 			if (recording_holder[id] === undefined) {
@@ -634,21 +635,22 @@
 		absolute_position_holder[id].remove();
 		delete absolute_position_holder[id];
 
-		if (send_type === 2) { //MIDI. todo.
+		if (send_type === 2) {
+			sendMidiMessage(0x80, note_info, 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
 			delete beep_holder[id];
 			return;
 		}
 
 		if (send_type === 1) {
-			Module._mute_interruptible_note(struct_of_stuff);
+			Module._mute_interruptible_note(note_info);
 			delete beep_holder[id];
 			return;
 		}
 		//else send_type === 0
 		let now = audioCtx.currentTime;
-		let muteTime = struct_of_stuff.muteTime;
-		struct_of_stuff.gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
-		struct_of_stuff.oscillator.stop(now + muteTime);
+		let muteTime = note_info.muteTime;
+		note_info.gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
+		note_info.oscillator.stop(now + muteTime);
 		delete beep_holder[id];
 	}
 
@@ -899,6 +901,35 @@
 			t.dispatchEvent(upEvent);
 		}
 	}
+
+
+	//Web MIDI. https://webmidi-examples.glitch.me/ https://github.com/ad8e/Just-intonation-keyboard/issues/1#issuecomment-1745976924
+	//todo, toggle midi on or off. call connect()
+	function connect() {
+		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error:', err));
+	}
+
+	function midiReady(midi) {
+		//react to device changes.
+		midi.addEventListener('statechange', (event) => initDevices(event.target));
+		initDevices(midi);
+	}
+
+	let midiOut = [];
+	function initDevices(midi) {
+		midiOut = Array.from(midi.outputs.values());
+		if (midiOut.size === 0)
+			console.log("No MIDI devices found!");
+		selectDevice.innerHTML = "<option>Default: output directly</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
+	}
+	function sendMidiMessage(status, pitch, velocity) {
+		const device = midiOut[selectOut.selectedIndex - 1];
+		device.send([status, pitch, velocity]);
+	}
+
+	//todo: displayDevices, selectOut
+
+
 
 
 	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
