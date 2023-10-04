@@ -921,9 +921,7 @@
 			console.log("No MIDI devices found!");
 			selector.style.display = 'none';
 		}
-		else {
-			selector.style.display = 'inline-block';
-		}
+		else selector.style.display = 'inline-block';
 	}
 	function sendMidiMessage(status, pitch, velocity) {
 		const device = midiOut[selectMIDIOutput.selectedIndex - 1];
