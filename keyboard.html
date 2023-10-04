@@ -568,7 +568,7 @@
 		}
 
 		//any device except the first is a MIDI device
-		if (selectOut.selectedIndex > 0) {
+		if (selectDevice.selectedIndex > 0) {
 			//what happens when notes overlap: https://stackoverflow.com/a/69696511/
 			let midi_note_number = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//restricts the range to [0, 127], the midi bound
@@ -908,14 +908,11 @@
 		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error:', err));
 	}
 
-	let selector = document.createElement("select");
-	selector.id = "selectDevice";
-	secondcontainer.after(selector);
-
 	function midiReady(midi) {
 		let selector = document.createElement("select");
 		selector.id = "selectDevice";
-		keyboard.appendChild(selector);
+		secondcontainer.after(selector);
+
 		//react to device changes.
 		midi.addEventListener('statechange', (event) => initDevices(event.target));
 		initDevices(midi);
@@ -929,11 +926,9 @@
 		selectDevice.innerHTML = "<option>Default: output directly</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
 	}
 	function sendMidiMessage(status, pitch, velocity) {
-		const device = midiOut[selectOut.selectedIndex - 1];
+		const device = midiOut[selectDevice.selectedIndex - 1];
 		device.send([status, pitch, velocity]);
 	}
-
-	//todo: displayDevices, selectOut
 
 
 
