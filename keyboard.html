@@ -550,12 +550,12 @@
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
 		if (typeof selectMIDIOutput !== 'undefined' && selectMIDIOutput.selectedIndex > 0) {
 			//when Note-On messages overlap: https://stackoverflow.com/a/69696511/
-			let midi_note_number = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
+			let midiNoteNumber = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//the midi key range is [0, 127]
-			midi_note_number = Math.min(Math.max(midi_note_number, 0), 127);
+			midiNoteNumber = Math.min(Math.max(midiNoteNumber, 0), 127);
 			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is Note-Off, 100 is velocity (1 to 127). someone said 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
-			console.log(midi_note_number);
-			return [2, midi_note_number];
+			console.log(midiNoteNumber);
+			return [2, midiNoteNumber];
 		}
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
