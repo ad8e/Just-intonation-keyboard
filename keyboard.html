@@ -333,8 +333,20 @@
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
-	let colors = [0, 0, 0, 0];
-	let colors_excluding_blue_keys = [0, 0, 0, 0];
+	let colors = [0, 0, 0, 0]; //frequency of a note = (original number on key) * (this)
+	let colors_excluding_blue_keys = [0, 0, 0, 0]; //frequency of a note = (fraction written on key) * (this). because blue keys modify the text written on the key
+
+
+	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
+	for (let i = 0; i < keymultiples.length; ++i) {
+		let length = (12 * Math.log2(keymultiples[i])).toString();
+		let newDiv = document.createElement("div");
+		newDiv.classList.add('ckey');
+		newDiv.textContent = keymultiples[i].toString();
+		newDiv.style = "left:calc(var(--w) * " + length + ")";
+		colorbar.appendChild(newDiv);
+	}
+
 
 	function set_keyboard_position() {
 		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
@@ -446,11 +458,32 @@
 			let primes = [2n, 3n, 5n, 7n];
 			for (let i = 0; i < 4; ++i) {
 				if (colors_excluding_blue_keys[i] < 0)
-					d *= primes[i] ** BigInt(- colors_excluding_blue_keys[i]);
+					d *= primes[i] ** BigInt(-colors_excluding_blue_keys[i]);
 				else n *= primes[i] ** BigInt(colors_excluding_blue_keys[i]);
 			}
 			return [n, d];
 		}
+	}
+
+	function count_primes(number) {
+		let two = 0, three = 0, five = 0, seven = 0;
+		while (number % 2 == 0) {
+			number /= 2;
+			++two;
+		}
+		while (number % 3 == 0) {
+			number /= 3;
+			++three;
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			++five;
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			++seven;
+		}
+		return [two, three, five, seven];
 	}
 
 	function gcd(a, b) {
@@ -512,9 +545,20 @@
 			absolute_position_holder[t.id] = newDiv;
 		}
 
+		let WebMIDIoutput = true;
+		if (WebMIDIoutput) {
+			//what happens when notes overlap: https://stackoverflow.com/a/69696511/
+			let midi_note_number = piano_key_from_primes(colors) + t["piano_offset"];
+			//restricts the range to [0, 127], the midi bound
+			midi_note_number = Math.min(Math.max(midi_note_number, 0), 127);
+			//todo, send midi
+			console.log(midi_note_number);
+			return [2, midi_note_number];
+		}
+
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
-			return incrementor_for_IDs;
+			return [1, incrementor_for_IDs];
 		}
 
 		//backup synthesizer in javascript, in case WASM fails. can have up to 20 ms latency, depending on your browser + OS.
@@ -546,11 +590,11 @@
 		gainNode.gain.setTargetAtTime(volume, now, 2.0 / frequency);
 		oscillator.start(now);
 		console.log("tone at", frequency, "Hz");
-		return { oscillator, gainNode, muteTime };
+		return [0, { oscillator, gainNode, muteTime }];
 	};
 
 	function stop_beep(id) {
-		struct_of_stuff = beep_holder[id];
+		const [send_type, struct_of_stuff] = beep_holder[id];
 
 		if (recording) {
 			if (recording_holder[id] === undefined) {
@@ -568,11 +612,17 @@
 		absolute_position_holder[id].remove();
 		delete absolute_position_holder[id];
 
-		if (Module !== undefined && Module._mute_interruptible_note !== undefined) {
+		if (send_type === 2) { //MIDI. todo.
+			delete beep_holder[id];
+			return;
+		}
+
+		if (send_type === 1) {
 			Module._mute_interruptible_note(struct_of_stuff);
 			delete beep_holder[id];
 			return;
 		}
+		//else send_type === 0
 		let now = audioCtx.currentTime;
 		let muteTime = struct_of_stuff.muteTime;
 		struct_of_stuff.gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
@@ -580,7 +630,8 @@
 		delete beep_holder[id];
 	}
 
-	let beep_holder = [];
+	let beep_holder = []; //when a note is started, this will store the ID of that note: {type, ID}. "type" : {0, 1, 2} represents how it was played: either through the javascript synth (0), the C++ synth (1), or the Web MIDI output (2). this information is used to stop that note: we send the "note off" signal to the location specified by the type.
+
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
 	function reset_frequency() {
 		for (let r = 0; r < 4; ++r) {
@@ -590,6 +641,19 @@
 		set_keyboard_position();
 	}
 	reset_frequency();
+
+	document.querySelectorAll('.keyg').forEach(function (g) {
+		let f = fraction_on_key(g);
+		g["piano_offset"] = piano_key_from_primes(count_primes(f[0]));
+	});
+
+	function piano_key_from_primes(prime_counts) {
+		let number = 40; //starting point: corresponding to 82.5
+		const [two, three, five, seven] = prime_counts;
+		number += two * 12 + three * 19 + five * 28 + seven * 34;
+		return number;
+	}
+
 
 	function multiply_all_green_keys(t, down) {
 		let r = fraction_on_key(t);
@@ -811,36 +875,7 @@
 			t.dispatchEvent(upEvent);
 		}
 	}
-	function count_primes(number) {
-		let two = 0, three = 0, five = 0, seven = 0;
-		while (number % 2 == 0) {
-			number /= 2;
-			++two;
-		}
-		while (number % 3 == 0) {
-			number /= 3;
-			++three;
-		}
-		while (number % 5 == 0) {
-			number /= 5;
-			++five;
-		}
-		while (number % 7 == 0) {
-			number /= 7;
-			++seven;
-		}
-		return [two, three, five, seven];
-	}
 
-	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
-	for (let i = 0; i < keymultiples.length; ++i) {
-		let length = (12 * Math.log2(keymultiples[i])).toString();
-		let newDiv = document.createElement("div");
-		newDiv.classList.add('ckey');
-		newDiv.textContent = keymultiples[i].toString();
-		newDiv.style = "left:calc(var(--w) * " + length + ")";
-		colorbar.appendChild(newDiv);
-	}
 
 	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
 	//also, it doesn't sound good playing random notes anymore. too many adjacent numbers
