@@ -910,6 +910,9 @@
 	}
 
 	function midiReady(midi) {
+		let selector = document.createElement("select");
+		selector.id = "selectDevice";
+		keyboard.appendChild(selector);
 		//react to device changes.
 		midi.addEventListener('statechange', (event) => initDevices(event.target));
 		initDevices(midi);
