@@ -337,17 +337,6 @@
 	let colors_excluding_blue_keys = [0, 0, 0, 0]; //frequency of a note = (fraction written on key) * (this). because blue keys modify the text written on the key
 
 
-	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
-	for (let i = 0; i < keymultiples.length; ++i) {
-		let length = (12 * Math.log2(keymultiples[i])).toString();
-		let newDiv = document.createElement("div");
-		newDiv.classList.add('ckey');
-		newDiv.textContent = keymultiples[i].toString();
-		newDiv.style = "left:calc(var(--w) * " + length + ")";
-		colorbar.appendChild(newDiv);
-	}
-
-
 	function set_keyboard_position() {
 		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
 		let position_Db = 0.5 + 12 * 4 + 3 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
@@ -887,6 +876,17 @@
 
 	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
+
+
+	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
+	for (let i = 0; i < keymultiples.length; ++i) {
+		let length = (12 * Math.log2(keymultiples[i])).toString();
+		let newDiv = document.createElement("div");
+		newDiv.classList.add('ckey');
+		newDiv.textContent = keymultiples[i].toString();
+		newDiv.style = "left:calc(var(--w) * " + length + ")";
+		colorbar.appendChild(newDiv);
+	}
 
 	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
 	//also, it doesn't sound good playing random notes anymore. too many adjacent numbers
