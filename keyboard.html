@@ -570,7 +570,7 @@
 		let WebMIDIoutput = true;
 		if (WebMIDIoutput) {
 			//what happens when notes overlap: https://stackoverflow.com/a/69696511/
-			let midi_note_number = piano_key_from_primes(colors) + t["piano_offset"];
+			let midi_note_number = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//restricts the range to [0, 127], the midi bound
 			midi_note_number = Math.min(Math.max(midi_note_number, 0), 127);
 			//todo, send midi
@@ -655,6 +655,8 @@
 	let beep_holder = []; //when a note is started, this will store the ID of that note: {type, ID}. "type" : {0, 1, 2} represents how it was played: either through the javascript synth (0), the C++ synth (1), or the Web MIDI output (2). this information is used to stop that note: we send the "note off" signal to the location specified by the type.
 
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
+	const base_midi_note = 40; //MIDI relies on associating note 40 to 82.5 Hz. if 82.5 Hz is changed, update this.
+
 	function reset_frequency() {
 		for (let r = 0; r < 4; ++r) {
 			color_square(r, -colors[r], 0);
@@ -670,7 +672,7 @@
 	});
 
 	function piano_key_from_primes(prime_counts) {
-		let number = 40; //starting point: corresponding to 82.5
+		let number = 0;
 		const [two, three, five, seven] = prime_counts;
 		number += two * 12 + three * 19 + five * 28 + seven * 34;
 		return number;
