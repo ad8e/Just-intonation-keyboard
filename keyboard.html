@@ -519,7 +519,7 @@
 			let midiNoteNumber = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//the midi key range is [0, 127]
 			midiNoteNumber = Math.min(Math.max(midiNoteNumber, 0), 127);
-			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is Note-Off, 100 is velocity (1 to 127). 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
+			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is Note-On, 100 is velocity (1 to 127). 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
 			console.log(midiNoteNumber);
 			return [2, midiNoteNumber]; //note that we're not storing the MIDI device. so if the device is changed in between Note-On and Note-Off, there will be trouble.
 		}
