@@ -473,7 +473,7 @@
 	}
 
 
-	let absolute_position_holder = [];
+	let note_frequency_visualizers = [];
 	let blue_square_on_play_div = document.createElement("div");
 	blue_square_on_play_div.classList.add('abs');
 
@@ -499,7 +499,7 @@
 		//todo, maybe move this after the note plays
 		//it costs 1-2.4 ms latency for 21 keys. to test: press Record, and press the all-notes green button
 		//note that times in Record are 1/10 ms, not 1 ms.
-		//removing absolute_position_holder causes latency to drop to 4-13.
+		//removing note_frequency_visualizers causes latency to drop to 4-13.
 		//cloneNode instead of document.createElement gives 6-15
 		//well, except I'm now getting 4-15 with document.createElement
 		{
@@ -510,7 +510,7 @@
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
 			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
 			absoluteholder.prepend(newDiv);
-			absolute_position_holder[t.id] = newDiv;
+			note_frequency_visualizers[t.id] = newDiv;
 		}
 
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
@@ -577,8 +577,8 @@
 				delete recording_holder[id];
 			}
 		}
-		absolute_position_holder[id].remove();
-		delete absolute_position_holder[id];
+		note_frequency_visualizers[id].remove();
+		delete note_frequency_visualizers[id];
 
 		if (send_type === 2) {
 			sendMidiMessage(0x80, note_info, 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
