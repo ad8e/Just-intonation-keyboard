@@ -304,7 +304,6 @@
 <div class="bkey" style="left:calc(var(--w) * 93)"></div>
 </div>
 </div>
-<select id="selectDevice"></select>
 <script>let Module = undefined;</script></main>
 
 
@@ -909,6 +908,9 @@
 		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error:', err));
 	}
 
+	let selector = document.createElement("select");
+		selector.id = "selectDevice";
+		keyboard.appendChild(selector);
 	function midiReady(midi) {
 		let selector = document.createElement("select");
 		selector.id = "selectDevice";
