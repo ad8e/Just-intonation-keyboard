@@ -467,6 +467,8 @@
 
 	function count_primes(number) {
 		let two = 0, three = 0, five = 0, seven = 0;
+
+		if (typeof BigInt === 'undefined') {
 		while (number % 2 == 0) {
 			number /= 2;
 			++two;
@@ -483,6 +485,26 @@
 			number /= 7;
 			++seven;
 		}
+	}
+	else {
+		while (number % 2n == 0n) {
+			number /= 2n;
+			++two;
+		}
+		while (number % 3n == 0n) {
+			number /= 3n;
+			++three;
+		}
+		while (number % 5n == 0n) {
+			number /= 5n;
+			++five;
+		}
+		while (number % 7n == 0n) {
+			number /= 7n;
+			++seven;
+		}
+
+	}
 		return [two, three, five, seven];
 	}
 
