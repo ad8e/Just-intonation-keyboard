@@ -909,8 +909,9 @@
 	}
 
 	let selector = document.createElement("select");
-		selector.id = "selectDevice";
-		keyboard.appendChild(selector);
+	selector.id = "selectDevice";
+	secondcontainer.after(selector);
+
 	function midiReady(midi) {
 		let selector = document.createElement("select");
 		selector.id = "selectDevice";
