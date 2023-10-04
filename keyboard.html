@@ -465,44 +465,25 @@
 		}
 	}
 
+	//only for Numbers, not BigInts
 	function count_primes(number) {
 		let two = 0, three = 0, five = 0, seven = 0;
 
-		if (typeof BigInt === 'undefined') {
-			while (number % 2 == 0) {
-				number /= 2;
-				++two;
-			}
-			while (number % 3 == 0) {
-				number /= 3;
-				++three;
-			}
-			while (number % 5 == 0) {
-				number /= 5;
-				++five;
-			}
-			while (number % 7 == 0) {
-				number /= 7;
-				++seven;
-			}
+		while (number % 2 == 0) {
+			number /= 2;
+			++two;
 		}
-		else {
-			while (number % 2n == 0n) {
-				number /= 2n;
-				++two;
-			}
-			while (number % 3n == 0n) {
-				number /= 3n;
-				++three;
-			}
-			while (number % 5n == 0n) {
-				number /= 5n;
-				++five;
-			}
-			while (number % 7n == 0n) {
-				number /= 7n;
-				++seven;
-			}
+		while (number % 3 == 0) {
+			number /= 3;
+			++three;
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			++five;
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			++seven;
 		}
 		return [two, three, five, seven];
 	}
@@ -667,8 +648,7 @@
 	reset_frequency();
 
 	document.querySelectorAll('.keyg').forEach(function (g) {
-		let f = fraction_on_key(g);
-		g["piano_offset"] = piano_key_from_primes(count_primes(f[0]));
+		g["piano_offset"] = piano_key_from_primes(count_primes(parseInt(g.textContent)));
 	});
 
 	function piano_key_from_primes(prime_counts) {
