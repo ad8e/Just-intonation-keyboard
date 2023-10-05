@@ -179,11 +179,11 @@
 		--w: calc(var(--key-scale) / 6);
 	}
 
-	#colorbar, #piano, #absoluteholder {
+	#numberbar, #piano, #absoluteholder {
 		/*margin: 0;*/
 		position: absolute;
 	}
-	#colorbar {
+	#numberbar {
 		top: calc(var(--key-scale)*-0.02);
 	}
 	#piano {
@@ -260,7 +260,7 @@
 </div>
 <div id="secondcontainer">
 <div id="absoluteholder"></div>
-<div id="colorbar"></div>
+<div id="numberbar"></div>
 <div id="piano">
 <div class="bkey" style="left:calc(var(--w) * 0)"></div>
 <div class="bkey" style="left:calc(var(--w) * 2)"></div>
@@ -345,7 +345,7 @@
 		let adjust_blue = Number(frac1[0]) / Number(frac1[1]);
 		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660);
 
-		colorbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")";
+		numberbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")"; //3vw = half of the width 6vw
 	}
 	function color_square(row, change, is_blue) {
 		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
@@ -510,7 +510,7 @@
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
 			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
 			absoluteholder.prepend(newDiv);
-			ongoing_notes[id]["visual"] = newDiv;
+			ongoing_notes[id][3] = newDiv;
 		}
 
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
@@ -582,7 +582,7 @@
 				delete recording_holder[id];
 			}
 		}
-		ongoing_notes[id]["visual"].remove();
+		ongoing_notes[id][3].remove();
 
 		if (ongoing_notes[id][2] !== undefined) {
 			sendMidiMessage(0x80, ongoing_notes[id][2], 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
@@ -602,7 +602,8 @@
 		delete ongoing_notes[id];
 	}
 
-	let ongoing_notes = []; //when a note is started, this will store the ID of that note: {type, ID}. "type" : {0, 1, 2} represents how it was played: either through the javascript synth (0), the C++ synth (1), or the Web MIDI output (2). this information is used to stop that note: we send the "note off" signal to the location specified by the type.
+	let ongoing_notes = []; //when a note is started, ongoing_notes[id] is an array of information about that note, used for its destructor.
+	//ongoing_notes[id][0] = javascript synth, [1] = C++ synth, [2] = Web MIDI output, [3] = the cyan blue rectangle over the piano.
 
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
 	const base_midi_note = 40; //MIDI relies on associating note 40 to 82.5 Hz. if 82.5 Hz is changed, update this.
@@ -899,7 +900,7 @@
 		newDiv.classList.add('ckey');
 		newDiv.textContent = keymultiples[i].toString();
 		newDiv.style = "left:calc(var(--w) * " + length + ")";
-		colorbar.appendChild(newDiv);
+		numberbar.appendChild(newDiv);
 	}
 
 	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
