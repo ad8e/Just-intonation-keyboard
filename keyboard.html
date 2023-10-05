@@ -179,7 +179,7 @@
 		--w: calc(var(--key-scale) / 6);
 	}
 
-	#numberbar, #piano, #absoluteholder {
+	#numberbar, #piano, #note_frequency_visualizer {
 		/*margin: 0;*/
 		position: absolute;
 	}
@@ -259,7 +259,7 @@
 </div>
 </div>
 <div id="secondcontainer">
-<div id="absoluteholder"></div>
+<div id="note_frequency_visualizer"></div>
 <div id="numberbar"></div>
 <div id="piano">
 <div class="bkey" style="left:calc(var(--w) * 0)"></div>
@@ -509,7 +509,7 @@
 
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
 			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
-			absoluteholder.prepend(newDiv);
+			note_frequency_visualizer.prepend(newDiv);
 			ongoing_notes[id][3] = newDiv;
 		}
 
