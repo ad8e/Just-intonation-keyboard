@@ -882,11 +882,11 @@
 	}
 	function midiOutputChange() {
 		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists
-			synthCheckbox.style.display = 'none';
+			synthCheckboxHolder.style.display = 'none';
 			synthCheckbox.checked = true;
 		}
 		else {
-			synthCheckbox.style.display = 'inline-block';
+			synthCheckboxHolder.style.display = 'inline-block';
 		}
 		//todo
 	}
