@@ -868,7 +868,7 @@
 		if (formerSelected < selectMIDIOutput.length)
 			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
 		else selectMIDIOutput.selectedIndex = 0;
-		midiOutputChange();
+		midiOutputChanged();
 
 		if (midiOut.length === 0) {
 			console.log("No MIDI devices found!");
@@ -880,7 +880,7 @@
 		const device = midiOut[selectMIDIOutput.selectedIndex - 1];
 		device.send([status, pitch, velocity]);
 	}
-	function midiOutputChange() {
+	function midiOutputChanged() {
 		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
 			synthCheckboxHolder.style.display = 'none';
 			synthCheckbox.checked = true;
