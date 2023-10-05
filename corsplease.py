@@ -11,4 +11,4 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         SimpleHTTPRequestHandler.end_headers(self)
 
 if __name__ == '__main__':
-    test(CORSRequestHandler, HTTPServer, port=int(sys.argv[1]) if len(sys.argv) > 1 else 8000)
+    test(CORSRequestHandler, HTTPServer, protocol="HTTP/1.1", port=int(sys.argv[1]) if len(sys.argv) > 1 else 8000, bind = '127.0.0.1')

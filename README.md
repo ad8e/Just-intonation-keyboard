@@ -1,5 +1,5 @@
-This repository is if you want to submit changes. I'll probably say yes.
+This repository is if you want to submit patches, issues, or questions.
 
-The timbre is a sine wave rather than the cool detuned piano, since I wrote the piano in C++. But that requires an extra compile step with emscripten, and then you also need to have a local webserver and set up CORS headers. You probably don't want to bother with all that stuff. The sine wave is good enough.
+You can open keyboard.html on its own. The timbre is a sine wave, because of CORS issues.
 
-That unfortunately means the player piano doesn't work either since it's also in C++. :(
+If you want the cool piano timbre, then download the repository, run `corsplease.py` to set up a local webserver, then go to `http://127.0.0.1:8000/keyboard.html` in your web browser.
