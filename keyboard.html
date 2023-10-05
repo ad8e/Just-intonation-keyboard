@@ -864,7 +864,7 @@
 	function initDevices(midi) {
 		midiOut = Array.from(midi.outputs.values());
 		let formerSelected = selectMIDIOutput.selectedIndex;
-		selectMIDIOutput.innerHTML = "<option>Default output: in-page synth</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
+		selectMIDIOutput.innerHTML = "<option>MIDI output off</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
 		if (formerSelected < selectMIDIOutput.length)
 			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
 		else selectMIDIOutput.selectedIndex = 0;
@@ -881,14 +881,13 @@
 		device.send([status, pitch, velocity]);
 	}
 	function midiOutputChange() {
-		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists
+		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
 			synthCheckboxHolder.style.display = 'none';
 			synthCheckbox.checked = true;
 		}
 		else {
 			synthCheckboxHolder.style.display = 'inline';
 		}
-		//todo
 	}
 	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
