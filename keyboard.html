@@ -881,7 +881,7 @@
 		device.send([status, pitch, velocity]);
 	}
 	function midiOutputChange() {
-		if (selectMIDIOutput.selectedIndex === 0) {
+		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists
 			synthCheckbox.style.display = 'none';
 			synthCheckbox.checked = true;
 		}
