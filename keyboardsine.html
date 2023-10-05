@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang='en-US'>
+<meta charset='utf-8'>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="See harmony in just intonation, no music background needed.">
+<meta property="og:url" content="https://ad8e.pages.dev/keyboard"/>
+<meta property="og:title" content="A novel keyboard for music"/>
+<meta property="og:description" content="Play music without knowing music"/>
+<meta property="og:image" content="https://ad8e.pages.dev/keyboard_screenshot.png"/>
+<title>A novel keyboard for music</title>
+<style>
+	body {
+		font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+		overflow-x: hidden; /* necessary on Firefox: clicking inside the input box causes a huge horizontal scrollbar, probably because the keyboard's transform falls apart. also necessary on chrome: 100 vw doesn't consider the scrollbar */
+	}
+
+	main {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: min(800px, 100%);
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* remove black border on buttons for chrome */
+	.con > button:focus, .con > button:hover { outline:none; }
+
+	a[onclick]:not([href]) {
+		cursor: pointer;
+		color: rgb(51, 118, 34);
+		text-decoration: underline;
+	}
+
+	:root {
+		--key-scale: min(23.5vh, 8.51063829787vw);
+	}
+
+	.flex-v {
+		/* https://stackoverflow.com/a/41059954/ */
+		width: 100vw;
+		margin-left: 50%;
+		transform: translateX(-50%);
+
+		display: flex;
+		flex-direction: column;
+
+		/* prevent long touch from selecting it */
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+
+		--w: calc(var(--key-scale) / 6);
+	}
+
+	.flex-h {
+		display: flex;
+		margin: auto;
+		height: var(--key-scale);
+	}
+
+	.keyd,
+	.keyg,
+	.keyp,
+	.keyb,
+	.keyn {
+		/* margin counts twice. no collapsing either horizontally or vertically. border is internal as long as it is not huge */
+		margin: calc(var(--key-scale) * 0.05);
+		display: block;
+		width: calc(var(--key-scale) * 0.9);
+		height: calc(var(--key-scale) * 0.9);
+		background-color: #f1f1f1;
+		border-radius: calc(var(--key-scale) * 0.1);
+		font-size: calc(var(--key-scale) * 0.4);
+		text-align: center;
+		padding: 0;
+		/* necessary for mobile Safari, which otherwise starts the text in the center of the button */
+
+		touch-action: none;
+		/*pinch to zoom is extremely annoying*/
+	}
+
+	/* hover effect for mouse only. https://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices */
+	@media (pointer: fine) {
+		.keyg:hover,
+		.keyp:hover {
+			background-color: #fff;
+		}
+	}
+
+	.keybump {
+		background-color: #e4e4e4
+	}
+	.keyd {
+		color: #d0d0d0;
+		pointer-events: none;
+		/* otherwise you fail to release when mouse-up is over this button. https://stackoverflow.com/questions/62081666/the-event-of-the-document-is-not-triggered-when-it-is-on-a-disabled-element */
+	}
+	.keyg {
+		color: #389900;
+	}
+	.keyb {
+		color: #007aff;
+	}
+	.keyp {
+		color: #9a00d2;
+		transition: color 0.3s ease-out;
+	}
+	.keyd, .keyg, .keyp, .keyb {
+		border-color: #efefef #d5d5d5 #ababab;
+		border-style: solid;
+	}
+	.keyn {
+		background-color: #f1f1f1;
+	}
+
+	.depress {
+		border-color: #d0d0d0 #d5d5d5 #dadada;
+		color: #00eeff;
+		transition: color 0s;
+	}
+
+	.con {
+		padding: 0;
+		margin: 0;
+		width: var(--key-scale);
+		height: var(--key-scale);
+		display: flex;
+	}
+
+	.r0 {
+		--color: #e0e0ff;
+	}
+	.r1 {
+		--color: #d5ffd5;
+	}
+	.r2 {
+		--color: #ffc;
+	}
+	.r3 {
+		--color: #ffe0e0;
+	}
+
+	.on {
+		background: var(--color);
+	}
+
+	.bkey{
+		background: black;
+		width: var(--w);
+		height: calc(var(--key-scale) * 0.04);
+		position: absolute;
+		/*margin: 0;*/
+		/*overflow: hidden;*/
+		/*display: inline-block;*/
+	}
+
+	.ckey{
+		width: 6vw; /*5% doesn't work, it gives 0*/
+		font-size: calc(var(--key-scale) * 0.2);
+		position: absolute;
+		color: #389900;
+		/*margin-top: 0;*/
+		/*display: inline-block;*/
+		text-align: center;
+		/*top: 0;*/
+	}
+
+	#secondcontainer {
+		width: 100vw;
+		margin-left: 50%;
+		transform: translateX(-50%);
+		overflow: hidden;
+		height: calc(var(--key-scale) / 4);
+
+		--w: calc(var(--key-scale) / 6);
+	}
+
+	#numberbar, #piano, #note_frequency_visualizer {
+		/*margin: 0;*/
+		position: absolute;
+	}
+	#numberbar {
+		top: calc(var(--key-scale)*-0.02);
+	}
+	#piano {
+		top: calc(var(--key-scale)*0.23);
+	}
+	.abs {
+		position: absolute;
+		width: var(--w);
+		height: calc(var(--key-scale)*0.23);
+		background-color: #9ff;
+	}
+</style>
+
+<body>
+	<main id='main'><div class="flex-v" id="keyboard">
+<div class="flex-h">
+<div class='con r0 p1' style="width: calc(var(--key-scale) * 0.5)"><div class="keyn" style="width: calc(var(--key-scale) * 0.4)"></div></div>
+<div class='con r0 p2'><button class="keyb" id="Digit2">6/5</button></div>
+<div class='con r0 p3'><button class="keyb" id="Digit3">5/4</button></div>
+<div class='con r0 p4'><button class="keyb" id="Digit4">4/3</button></div>
+<div class='con r0 p5'><button class="keyb" id="Digit5">3/2</button></div>
+<div class='con r0 p6'><button class="keyb" id="Digit6">2/1</button></div>
+<div class='con r0 p7'><button class="keyg" id="Digit7">25</button></div>
+<div class='con r0 p8'><button class="keyg" id="Digit8">30</button></div>
+<div class='con r0 p9'><button class="keyg" id="Digit9">32</button></div>
+<div class='con r0 p10'><button class="keyg" id="Digit0">24</button></div>
+<div class='con r0 p11'><button class="keyg" id="Minus">18</button></div>
+<div class='con r0 p12'><button class="keyg" id="Equal">27</button></div>
+<div class='con r0 p13' style="width: calc(var(--key-scale) * 0.25)"><div class="keyn" style="width: calc(var(--key-scale) * .15)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r1 p1'><button class="keyp" id='KeyQ'>7/6</button></div>
+<div class='con r1 p2'><button class="keyp" id='KeyW'>6/5</button></div>
+<div class='con r1 p3'><button class="keyp" id='KeyE'>5/4</button></div>
+<div class='con r1 p4'><button class="keyp" id='KeyR'>4/3</button></div>
+<div class='con r1 p5'><button class="keyp" id='KeyT'>3/2</button></div>
+<div class='con r1 p6'><button class="keyp" id='KeyY'>2/1</button></div>
+<div class='con r1 p7'><button class="keyg" id='KeyU'>15</button></div>
+<div class='con r1 p8'><button class="keyg" id='KeyI'>20</button></div>
+<div class='con r1 p9'><button class="keyg" id='KeyO'>16</button></div>
+<div class='con r1 p10'><button class="keyg" id='KeyP'>12</button></div>
+<div class='con r1 p11'><button class="keyg" id='BracketLeft'>9</button></div>
+<div class='con r1 p12' style="width: calc(var(--key-scale) * 0.75)"><div class="keyn" style="width: calc(var(--key-scale) * 0.65)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r2 p0' style="width: calc(var(--key-scale) * 0.25)"><div class="keyn" style="width: calc(var(--key-scale) * 0.15)"></div></div>
+<div class='con r2 p1'><button class="keyp" id='KeyA'>6/7</button></div>
+<div class='con r2 p2'><button class="keyp" id='KeyS'>5/6</button></div>
+<div class='con r2 p3'><button class="keyp" id='KeyD'>4/5</button></div>
+<div class='con r2 p4'><button class="keyp keybump" id='KeyF'>3/4</button></div>
+<div class='con r2 p5'><button class="keyp" id='KeyG'>2/3</button></div>
+<div class='con r2 p6'><button class="keyp" id='KeyH'>1/2</button></div>
+<div class='con r2 p7'><button class="keyg keybump" id='KeyJ'>14</button></div>
+<div class='con r2 p8'><button class="keyg" id='KeyK'>10</button></div>
+<div class='con r2 p9'><button class="keyg" id='KeyL'>8</button></div>
+<div class='con r2 p10'><button class="keyg" id='Semicolon'>6</button></div>
+<div class='con r2 p11'><button class="keyg" id='Quote'>3</button></div>
+<div class='con r2 p12' style="width: calc(var(--key-scale) * 0.5)"><div class="keyn" style="width: calc(var(--key-scale) * 0.4)"></div></div>
+</div>
+<div class="flex-h">
+<div class='con r3 p0' style="width: calc(var(--key-scale) * 0.75)"><div class="keyn" style="width: calc(var(--key-scale) * 0.65)"></div></div>
+<div class='con r3 p1'><button class="keyb" id='KeyZ'>6/7</button></div>
+<div class='con r3 p2'><button class="keyb" id='KeyX'>5/6</button></div>
+<div class='con r3 p3'><button class="keyb" id='KeyC'>4/5</button></div>
+<div class='con r3 p4'><button class="keyb" id='KeyV'>3/4</button></div>
+<div class='con r3 p5'><button class="keyb" id='KeyB'>2/3</button></div>
+<div class='con r3 p6'><button class="keyb" id='KeyN'>1/2</button></div>
+<div class='con r3 p7'><button class="keyg" id='KeyM'>7</button></div>
+<div class='con r3 p8'><button class="keyg" id='Comma'>5</button></div>
+<div class='con r3 p9'><button class="keyg" id='Period'>4</button></div>
+<div class='con r3 p10'><button class="keyg" id='Slash'>2</button></div>
+<div class='con r3 p11'><button class="keyg" id='ShiftRight'>1</button></div>
+</div>
+</div>
+<div id="secondcontainer">
+<div id="note_frequency_visualizer"></div>
+<div id="numberbar"></div>
+<div id="piano">
+<div class="bkey" style="left:calc(var(--w) * 0)"></div>
+<div class="bkey" style="left:calc(var(--w) * 2)"></div>
+<div class="bkey" style="left:calc(var(--w) * 5)"></div>
+<div class="bkey" style="left:calc(var(--w) * 7)"></div>
+<div class="bkey" style="left:calc(var(--w) * 9)"></div>
+<div class="bkey" style="left:calc(var(--w) * 12)"></div>
+<div class="bkey" style="left:calc(var(--w) * 14)"></div>
+<div class="bkey" style="left:calc(var(--w) * 17)"></div>
+<div class="bkey" style="left:calc(var(--w) * 19)"></div>
+<div class="bkey" style="left:calc(var(--w) * 21)"></div>
+<div class="bkey" style="left:calc(var(--w) * 24)"></div>
+<div class="bkey" style="left:calc(var(--w) * 26)"></div>
+<div class="bkey" style="left:calc(var(--w) * 29)"></div>
+<div class="bkey" style="left:calc(var(--w) * 31)"></div>
+<div class="bkey" style="left:calc(var(--w) * 33)"></div>
+<div class="bkey" style="left:calc(var(--w) * 36)"></div>
+<div class="bkey" style="left:calc(var(--w) * 38)"></div>
+<div class="bkey" style="left:calc(var(--w) * 41)"></div>
+<div class="bkey" style="left:calc(var(--w) * 43)"></div>
+<div class="bkey" style="left:calc(var(--w) * 45)"></div>
+<div class="bkey" style="left:calc(var(--w) * 48)"></div>
+<div class="bkey" style="left:calc(var(--w) * 50)"></div>
+<div class="bkey" style="left:calc(var(--w) * 53)"></div>
+<div class="bkey" style="left:calc(var(--w) * 55)"></div>
+<div class="bkey" style="left:calc(var(--w) * 57)"></div>
+<div class="bkey" style="left:calc(var(--w) * 60)"></div>
+<div class="bkey" style="left:calc(var(--w) * 62)"></div>
+<div class="bkey" style="left:calc(var(--w) * 65)"></div>
+<div class="bkey" style="left:calc(var(--w) * 67)"></div>
+<div class="bkey" style="left:calc(var(--w) * 69)"></div>
+<div class="bkey" style="left:calc(var(--w) * 72)"></div>
+<div class="bkey" style="left:calc(var(--w) * 74)"></div>
+<div class="bkey" style="left:calc(var(--w) * 77)"></div>
+<div class="bkey" style="left:calc(var(--w) * 79)"></div>
+<div class="bkey" style="left:calc(var(--w) * 81)"></div>
+<div class="bkey" style="left:calc(var(--w) * 84)"></div>
+<div class="bkey" style="left:calc(var(--w) * 86)"></div>
+<div class="bkey" style="left:calc(var(--w) * 89)"></div>
+<div class="bkey" style="left:calc(var(--w) * 91)"></div>
+<div class="bkey" style="left:calc(var(--w) * 93)"></div>
+</div>
+</div>
+<div style="text-align:center">
+<select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
+<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div></main>
+
+
+<script>
+	function play(str) { Module._play_string(stringToNewUTF8(str)); }
+	function play_on_keyboard(str) {
+		var residual_green_keys = document.getElementsByClassName("keyg");
+		[].forEach.call(residual_green_keys, function (t) { button_up_wrapper(t); });
+
+		reset_frequency();
+		Module._play_string_keyboard(stringToNewUTF8(str));
+	}
+
+	//license for keyboard: 0BSD
+	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
+
+	//Chrome and Edge have a 5-year old bug causing spurious keypresses. Just don't hold down harmony keys. A code solution would be to keep track of whether the harmonic keys are pressed. I didn't bother.
+	//https://stackoverflow.com/q/50372849
+	//https://bugs.chromium.org/p/chromium/issues/detail?id=843558
+
+	let audioCtx = null;
+	let incrementor_for_IDs = 1;
+
+	if (typeof SharedArrayBuffer === 'undefined') { //&& typeof Module !== 'undefined' //I think Module gets loaded later, on non-local webservers. so this leaves some junk in the separate keyboard. let's remove it with sed.
+		let p = document.createElement("p");
+		
+		keyboard.parentNode.insertBefore(p, keyboard);
+	}
+
+	let colors = [0, 0, 0, 0]; //frequency of a note = (original number on key) * (this)
+	let colors_excluding_blue_keys = [0, 0, 0, 0]; //frequency of a note = (fraction written on key) * (this). because blue keys modify the text written on the key
+
+
+	function set_keyboard_position() {
+		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
+		let position_Db = 0.5 + 12 * 4 + 1 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
+		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
+		let frac1 = fraction_on_key(document.getElementById('ShiftRight'));
+		let adjust_blue = Number(frac1[0]) / Number(frac1[1]);
+		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660) + 2; //add 1 to shift middle from E to D
+
+		numberbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")"; //3vw = half of the width 6vw
+	}
+	function color_square(row, change, is_blue) {
+		var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
+		if (list.length)
+			list[0].classList.remove("on");
+
+		colors[row] += change;
+		if (is_blue === 0)
+			colors_excluding_blue_keys[row] += change;
+
+		{
+			var list = document.getElementsByClassName("r" + row.toString() + " p" + (colors[row] + 6).toString());
+			if (list.length)
+				list[0].classList.add("on");
+		}
+	}
+
+
+	function ch_harmony(number, direction, is_blue) {
+		let pm1 = direction ? 1 : -1;
+		while (number % 2 == 0) {
+			number /= 2;
+			color_square(0, pm1, is_blue);
+		}
+		while (number % 3 == 0) {
+			number /= 3;
+			color_square(1, pm1, is_blue);
+		}
+		while (number % 5 == 0) {
+			number /= 5;
+			color_square(2, pm1, is_blue);
+		}
+		while (number % 7 == 0) {
+			number /= 7;
+			color_square(3, pm1, is_blue);
+		}
+	}
+
+	function fraction_on_key(t) {
+		let text = t.textContent;
+		let split = text.split('/');
+		if (typeof BigInt === 'undefined') {
+			n = parseInt(split[0]);
+			d = 1;
+			if (split.length == 2)
+				d = parseInt(split[1]);
+			return [n, d];
+		}
+		else {
+			n = BigInt(split[0]);
+			d = 1n;
+			if (split.length == 2)
+				d = BigInt(split[1]);
+			return [n, d];
+		}
+	}
+
+	let recording = false;
+	let recording_holder = [];
+	let recording_start = 0;
+
+	function stop_recording() {
+		recording = false;
+		recording_holder = [];
+		recording_start = 0;
+		recordbutton.textContent = "⏺ Record";
+	}
+	function start_recording() {
+		comp.value = "-s0.0001";
+		stop_recording();
+		recordbutton.textContent = "Recording:";
+		recording = true;
+	}
+	function play_button(t) {
+		stop_recording();
+		play_on_keyboard(comp.value);
+	}
+	function record_button(t) {
+		if (recording)
+			stop_recording();
+		else start_recording();
+	}
+
+	function colors_to_primes() {
+		if (typeof BigInt === 'undefined') {
+			let n = 1;
+			let d = 1;
+			let primes = [2, 3, 5, 7];
+			for (let i = 0; i < 4; ++i) {
+				if (colors_excluding_blue_keys[i] < 0)
+					d *= primes[i] ** (-colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** (colors_excluding_blue_keys[i]);
+			}
+			return [n, d];
+		}
+		else {
+			let n = 1n;
+			let d = 1n;
+			let primes = [2n, 3n, 5n, 7n];
+			for (let i = 0; i < 4; ++i) {
+				if (colors_excluding_blue_keys[i] < 0)
+					d *= primes[i] ** BigInt(-colors_excluding_blue_keys[i]);
+				else n *= primes[i] ** BigInt(colors_excluding_blue_keys[i]);
+			}
+			return [n, d];
+		}
+	}
+
+	function gcd(a, b) {
+		if (b == 0) return a;
+		return gcd(b, a % b);
+	}
+	function fraction_multiply(a, b) {
+		let n = a[0] * b[0];
+		let d = a[1] * b[1];
+		let gcdnd = gcd(n, d);
+		return [n / gcdnd, d / gcdnd];
+	}
+
+	function fraction_to_string(a) {
+		if (Number(a[1]) !== 1)
+			return a[0].toString() + "/" + a[1].toString();
+		else
+			return a[0].toString();
+	}
+
+
+	let blue_square_on_play_div = document.createElement("div");
+	blue_square_on_play_div.classList.add('abs');
+
+	function start_note(t, volume = 1.0, type = 'sine') {
+		let id = t.id;
+		let rational = fraction_on_key(t);
+		let frequency = base_frequency;
+		let relative = 0;
+		if (typeof BigInt === 'undefined') {
+			relative = rational[0] / rational[1];
+		}
+		else {
+			relative = Number(rational[0] * 100000n / rational[1]) / 100000;
+		}
+		frequency *= relative;
+		if (recording) {
+			let time = performance.now();
+			recording_holder[id] = [performance.now(), fraction_multiply(rational, colors_to_primes())];
+			if (recording_start == 0)
+				recording_start = time;
+		}
+		ongoing_notes[id] = [];
+
+		//todo, maybe move this after the note plays
+		//it costs 1-2.4 ms latency for 21 keys. to test: press Record, and press the all-notes green button
+		//note that times in Record are 1/10 ms, not 1 ms.
+		//removing note_frequency_visualizers causes latency to drop to 4-13.
+		//cloneNode instead of document.createElement gives 6-15
+		//well, except I'm now getting 4-15 with document.createElement
+		{
+			//let newDiv = document.createElement("div");
+			//newDiv.classList.add('abs');
+			let newDiv = blue_square_on_play_div.cloneNode(false);
+
+			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5 + 2; //0.5 is because it's to the left border, and it's 1 thick. +2 is because we're shifting from E to D
+			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
+			note_frequency_visualizer.prepend(newDiv);
+			ongoing_notes[id][3] = newDiv;
+		}
+
+		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
+		if (selectMIDIOutput.selectedIndex > 0) {
+			//when Note-On messages overlap: https://stackoverflow.com/a/69696511/
+			let midiNoteNumber = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
+			//the midi key range is [0, 127]
+			midiNoteNumber = Math.min(Math.max(midiNoteNumber, 0), 127);
+			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is Note-On, 100 is velocity (1 to 127). 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
+			console.log(midiNoteNumber);
+
+			ongoing_notes[id][2] = midiNoteNumber; //note that we're not storing the MIDI device. so if the device is changed in between Note-On and Note-Off, there will be trouble. but MIDI devices being detached would cause trouble anyway, so we don't care.
+
+			//todo, can't return anymore!
+		}
+
+		if (synthCheckbox.checked === false)
+			return;
+
+		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
+			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
+			ongoing_notes[id][1] = incrementor_for_IDs;
+			return;
+		}
+
+		//backup synthesizer in javascript, in case WASM fails. can have up to 20 ms latency, depending on your browser + OS.
+
+		if (audioCtx === null) {
+			var AudioContext = window.AudioContext // Default
+				|| window.webkitAudioContext // Safari and old versions of Chrome
+				|| false;
+
+			audioCtx = new AudioContext();
+		}
+
+		volume *= 50.0 / frequency;
+		//let oscillatorOptions = { frequency: frequency, type: type };
+		//let oscillator = new OscillatorNode(audioCtx, oscillatorOptions); //not supported until Safari 14.1
+		let oscillator = audioCtx.createOscillator();
+		oscillator.type = type;
+		oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+
+		//let gainNode = new GainNode(audioCtx); //not supported until Safari 14.1
+		let gainNode = audioCtx.createGain();
+
+		oscillator.connect(gainNode).connect(audioCtx.destination);
+
+		let now = audioCtx.currentTime + 0.015; //0.015 is for web browser audio latency. the actual latency is higher, but this only causes jumps in the gain, not the oscillator, so it isn't too bad.
+		let muteTime = 2.0 / Math.pow(frequency, 0.12);
+
+		gainNode.gain.setValueAtTime(0, now);
+		gainNode.gain.setTargetAtTime(volume, now, 2.0 / frequency);
+		oscillator.start(now);
+		console.log("tone at", frequency, "Hz");
+		ongoing_notes[id][0] = { oscillator, gainNode, muteTime };
+	};
+
+	function stop_note(id) {
+		if (recording) {
+			if (recording_holder[id] === undefined) {
+				console.log("up stroke with no down stroke. could happen if you're starting recording in the middle of a note");
+			}
+			else {
+				let time = performance.now();
+				const [time_start, rational] = recording_holder[id];
+				let time_from_start = Math.round(10 * (time_start - recording_start)).toString(); //don't worry too much about precision in html. 0.1 ms is good enough. and less text is better. also tied to: 10000n, and s0.0001
+				let duration = Math.round(10 * (time - time_start)).toString();
+				comp.value += "-[[t" + time_from_start + " >-t" + duration + "-" + fraction_to_string(rational) + "]";
+				delete recording_holder[id];
+			}
+		}
+		ongoing_notes[id][3].remove();
+
+		if (ongoing_notes[id][2] !== undefined) {
+			sendMidiMessage(0x80, ongoing_notes[id][2], 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
+		}
+
+		if (ongoing_notes[id][1] !== undefined) {
+			Module._mute_interruptible_note(ongoing_notes[id][1]);
+		}
+
+		if (ongoing_notes[id][0] !== undefined) {
+			let now = audioCtx.currentTime;
+			let {muteTime, gainNode, oscillator} = ongoing_notes[id][0];
+			gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
+			oscillator.stop(now + muteTime);
+		}
+
+		delete ongoing_notes[id];
+	}
+
+	let ongoing_notes = []; //when a note is started, ongoing_notes[id] is an array of information about that note, used for its destructor.
+	//[0] = javascript synth, [1] = C++ synth, [2] = Web MIDI output, [3] = the cyan blue rectangle over the piano.
+
+	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
+	const base_midi_note = 40; //MIDI relies on associating note 40 to 82.5 Hz. if 82.5 Hz is changed, update this.
+
+	function reset_frequency() {
+		for (let r = 0; r < 4; ++r) {
+			color_square(r, -colors[r], 0);
+		}
+		base_frequency = 82.5;
+		set_keyboard_position();
+	}
+	reset_frequency();
+
+	document.querySelectorAll('.keyg').forEach(function (g) {
+		g["piano_offset"] = Math.round(12 * Math.log2(parseInt(g.textContent)));
+	});
+
+	function piano_key_from_primes(prime_counts) {
+		let number = 0;
+		const [two, three, five, seven] = prime_counts;
+		number += two * 12 + three * 19 + five * 28 + seven * 34;
+		return number;
+	}
+
+	function multiply_all_green_keys(t, down) {
+		let r = fraction_on_key(t);
+		if (down === 0) {
+			let temp = r[0];
+			r[0] = r[1];
+			r[1] = temp;
+		}
+		document.querySelectorAll('.keyg').forEach(function (g) {
+			let f = fraction_on_key(g);
+			let new_fraction = fraction_multiply(f, r);
+			g.textContent = fraction_to_string(new_fraction);
+		});
+		adjust_purple(t, down, 1); //after the fraction changes on the green keys. this modifies the piano absolute position visualization
+	}
+
+	function adjust_harmony(i) {
+		base_frequency *= i;
+
+		//safety limiter for people who press random keys. actual musicians will want to disable this
+		//thresholds are 1/4 and 4 the original frequency, to let you press each purple key twice.
+		//I changed it to 1/8 and 4. because it's causing trouble for Passepied
+		//30/4 near the end of passepied is brutal. it's forced that way thanks to prevent-repeat
+		if (base_frequency < 10 || base_frequency > 331) {
+			reset_frequency();
+		}
+	}
+
+	function numerator_down(t) {
+		let handle = t.id;
+		if (ongoing_notes[handle] !== undefined)
+			stop_note(handle);
+		start_note(t);
+	}
+	function button_up(t) {
+		let handle = t.id;
+		if (ongoing_notes[handle] === undefined)
+			return;
+		stop_note(handle);
+	}
+
+	function downpress(t) {
+		t.classList.add("depress");
+	}
+	function release(t) {
+		t.classList.remove("depress");
+	}
+
+	function adjust_purple(t, direction, is_blue) {
+		const [i_, j_] = fraction_on_key(t);
+		i = Number(i_);
+		j = Number(j_);
+
+		if (direction === 0) {
+			i = Number(j_);
+			j = Number(i_);
+		}
+		ch_harmony(i, 1, is_blue);
+		ch_harmony(j, 0, is_blue);
+		if (!is_blue)
+			adjust_harmony(i / j); //adjust after changing colors - it might reset
+
+		set_keyboard_position();
+	}
+
+	function button_up_wrapper(t) {
+		if (t.classList.contains("depress"))
+			release(t);
+		else return;
+		if (t.classList.contains("keyg")) {
+			button_up(t);
+		}
+		//else if (t.classList.contains("keyp")) {
+		//}
+		else if (t.classList.contains("keyb")) {
+			multiply_all_green_keys(t, 0);
+		}
+	}
+
+	//returns true if pressed
+	function button_down_wrapper(t) {
+		if (t.classList.contains("depress"))
+			button_up_wrapper(t);
+		if (t.classList.contains("keyg")) {
+			numerator_down(t);
+			downpress(t);
+			return true;
+		}
+		else if (t.classList.contains("keyp")) {
+			adjust_purple(t, true, 0);
+			downpress(t);
+			return true;
+		}
+		else if (t.classList.contains("keyb")) {
+			multiply_all_green_keys(t, 1);
+			downpress(t);
+			return true;
+		}
+		return false;
+	}
+
+	addEventListener("keydown", (e) => {
+		if (e.ctrlKey) return;
+		if (e.target.tagName.toUpperCase() === 'INPUT' && e.target.type === 'text') return;
+		if (e.code === 'Slash' || e.code === 'Quote') e.preventDefault(); //prevent Quick find on Firefox
+		if (e.repeat) return;
+
+		let t = document.getElementById(e.code);
+		if (t === null)
+			return;
+		button_down_wrapper(t);
+	});
+
+	addEventListener("keyup", (e) => {
+		if (e.ctrlKey) return;
+		if (e.target.tagName.toUpperCase() === 'INPUT' && e.target.type === 'text') return;
+		let t = document.getElementById(e.code);
+		if (t === null)
+			return;
+		button_up_wrapper(t);
+	});
+
+	function pdown(id, t) {
+		if (t.classList === undefined) //t can be an "HTMLDocument", if you drag the mouse into the chrome
+			return;
+		if (button_down_wrapper(t))
+			pointerIdsPressed[id] = t;
+	}
+	function pup(id) {
+		let t = pointerIdsPressed[id];
+		if (t === undefined)
+			return;
+		button_up_wrapper(t);
+		delete pointerIdsPressed[id];
+	}
+
+	let pointerIdsPressed = [];
+	keyboard.addEventListener("pointerdown", (e) => {
+		if (e.button !== 0)
+			return;
+		let id = e.pointerId;
+		let t = e.target;
+		//console.log(e);
+
+		//https://stackoverflow.com/a/70737325/
+		if (t.hasPointerCapture(id)) {
+			t.releasePointerCapture(id);
+		}
+		if (t.classList.contains("con"))
+			t = t.firstChild;
+		//pup(id);
+		pdown(id, t);
+	}); //https://github.com/w3c/pointerevents/issues/359#issuecomment-819828218 "pointerevent listeners are passive by default"
+
+	//catch all mouseups, not just ones over the keyboard
+	addEventListener("pointerup", (e) => {
+		let id = e.pointerId;
+		//prevent double tap to select
+		//apparently, this doesn't work in pointerup. only touchend can prevent (forest fires) double tap to select?
+		//let in_keyboard = t.closest("#keyboard");
+		//if (in_keyboard !== null) {
+		//	e.preventDefault();
+		//}
+
+		pup(id);
+	});
+
+	//https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not
+	addEventListener("pointermove", (e) => {
+		if (e.buttons === 0)
+			return;
+		//seems there's no obvious way to track what button is pressed; we'd need to store it. let's not bother. so right click drag will cause issues.
+		let id = e.pointerId;
+		let cached_event = pointerIdsPressed[id];
+		let t = e.target;
+
+		if (t.classList === undefined) //HTMLDocument avoidance
+			return;
+		if (t.classList.contains("con"))
+			t = t.firstChild;
+
+		if (t !== cached_event) {
+			pup(id);
+			pdown(id, t);
+		}
+	});
+
+	//prevent double tap to select
+	addEventListener("touchend", (e) => {
+		let ts = e.changedTouches;
+		for (let i = 0; i < ts.length; i++) {
+			let t = ts[i].target;
+
+			let in_keyboard = t.closest("#keyboard");
+			if (in_keyboard !== null) {
+				e.preventDefault();
+			}
+		};
+	});
+
+	//for a player piano. this function is called from emscripten
+	function turn_button_on_off(str, on, ID) {
+		let t = document.getElementById(str);
+		//if (on)
+		//	downpress(t);
+		//else release(t);
+		if (on) {
+			const downEvent = new PointerEvent("pointerdown", {
+				pointerId: ID,
+				bubbles: true,
+			});
+			t.dispatchEvent(downEvent);
+		}
+		else {
+			const upEvent = new PointerEvent("pointerup", {
+				pointerId: ID,
+				bubbles: true,
+			});
+			t.dispatchEvent(upEvent);
+		}
+	}
+
+
+	//Web MIDI. copied from https://webmidi-examples.glitch.me/
+	function midiReady(midi) {
+		//react to device changes.
+		midi.addEventListener('statechange', (event) => {
+			const port = event.port;
+			console.log(`State change: ${port.type} ${port.id} ${port.manufacturer} ${port.name} ${port.version} ${port.state}`);
+			initDevices(event.target);
+		});
+		initDevices(midi);
+	}
+
+	let midiOut = [];
+	function initDevices(midi) {
+		midiOut = Array.from(midi.outputs.values());
+		let formerSelected = selectMIDIOutput.selectedIndex;
+		selectMIDIOutput.innerHTML = "<option>MIDI output off</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
+		if (formerSelected < selectMIDIOutput.length)
+			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
+		else selectMIDIOutput.selectedIndex = 0;
+		midiOutputChanged();
+
+		if (midiOut.length === 0) {
+			console.log("No MIDI devices found!");
+			selectMIDIOutput.style.display = 'none';
+		}
+		else selectMIDIOutput.style.display = 'inline-block';
+	}
+	function sendMidiMessage(status, pitch, velocity) {
+		const device = midiOut[selectMIDIOutput.selectedIndex - 1];
+		device.send([status, pitch, velocity]);
+	}
+	function midiOutputChanged() {
+		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
+			synthCheckboxHolder.style.display = 'none';
+			synthCheckbox.checked = true;
+		}
+		else {
+			synthCheckboxHolder.style.display = 'inline';
+		}
+	}
+	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
+
+
+	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
+	for (let i = 0; i < keymultiples.length; ++i) {
+		let length = (12 * Math.log2(keymultiples[i])).toString();
+		let newDiv = document.createElement("div");
+		newDiv.classList.add('ckey');
+		newDiv.textContent = keymultiples[i].toString();
+		newDiv.style = "left:calc(var(--w) * " + length + ")";
+		numberbar.appendChild(newDiv);
+	}
+
+	//unfortunately, this breaks the player piano because I hardcoded the labels on the C++ side.
+	//also, it doesn't sound good playing random notes anymore. too many adjacent numbers
+	//not sure if it's worth an option next to the keyboard. maybe somewhere else.
+	function lexicographic_green_keys() {
+		let key_labels = ['ShiftRight', 'Slash', 'Period', 'Comma', 'KeyM', 'Quote', 'Semicolon', 'KeyL', 'KeyK', 'KeyJ', 'BracketLeft', 'KeyP', 'KeyO', 'KeyI', 'KeyU', 'Equal', 'Minus', 'Digit0', 'Digit9', 'Digit8', 'Digit7'];
+		for (let i = 0; i < keymultiples.length; ++i) {
+			document.getElementById(key_labels[i]).textContent = keymultiples[i].toString();
+		}
+	}
+</script>
+</body>
+
+</html>
