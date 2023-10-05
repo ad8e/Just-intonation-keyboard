@@ -477,7 +477,7 @@
 	let blue_square_on_play_div = document.createElement("div");
 	blue_square_on_play_div.classList.add('abs');
 
-	function interruptible_beep(t, volume = 1.0, type = 'sine') {
+	function start_note(t, volume = 1.0, type = 'sine') {
 		let rational = fraction_on_key(t);
 		let frequency = base_frequency;
 		let relative = 0;
@@ -561,8 +561,8 @@
 		return [0, { oscillator, gainNode, muteTime }];
 	};
 
-	function stop_beep(id) {
-		const [send_type, note_info] = beep_holder[id];
+	function stop_note(id) {
+		const [send_type, note_info] = ongoing_notes[id];
 
 		if (recording) {
 			if (recording_holder[id] === undefined) {
@@ -582,13 +582,13 @@
 
 		if (send_type === 2) {
 			sendMidiMessage(0x80, note_info, 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
-			delete beep_holder[id];
+			delete ongoing_notes[id];
 			return;
 		}
 
 		if (send_type === 1) {
 			Module._mute_interruptible_note(note_info);
-			delete beep_holder[id];
+			delete ongoing_notes[id];
 			return;
 		}
 		//else send_type === 0
@@ -596,10 +596,10 @@
 		let {muteTime, gainNode, oscillator} = note_info;
 		gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
 		oscillator.stop(now + muteTime);
-		delete beep_holder[id];
+		delete ongoing_notes[id];
 	}
 
-	let beep_holder = []; //when a note is started, this will store the ID of that note: {type, ID}. "type" : {0, 1, 2} represents how it was played: either through the javascript synth (0), the C++ synth (1), or the Web MIDI output (2). this information is used to stop that note: we send the "note off" signal to the location specified by the type.
+	let ongoing_notes = []; //when a note is started, this will store the ID of that note: {type, ID}. "type" : {0, 1, 2} represents how it was played: either through the javascript synth (0), the C++ synth (1), or the Web MIDI output (2). this information is used to stop that note: we send the "note off" signal to the location specified by the type.
 
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
 	const base_midi_note = 40; //MIDI relies on associating note 40 to 82.5 Hz. if 82.5 Hz is changed, update this.
@@ -654,15 +654,15 @@
 
 	function numerator_down(t) {
 		let handle = t.id;
-		if (beep_holder[handle] !== undefined)
-			stop_beep(handle);
-		beep_holder[handle] = interruptible_beep(t);
+		if (ongoing_notes[handle] !== undefined)
+			stop_note(handle);
+		ongoing_notes[handle] = start_note(t);
 	}
 	function button_up(t) {
 		let handle = t.id;
-		if (beep_holder[handle] === undefined)
+		if (ongoing_notes[handle] === undefined)
 			return;
-		stop_beep(handle);
+		stop_note(handle);
 	}
 
 	function downpress(t) {
