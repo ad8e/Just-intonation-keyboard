@@ -863,7 +863,7 @@
 		midiOut = Array.from(midi.outputs.values());
 		selector.innerHTML = "<option>Default output: in-page synth</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join('')); //if a device is added, this could reset your device choice. luckily, Firefox isn't even good enough to update the list of devices. unsure about Chrome
 
-		if (midiOut.size === 0) {
+		if (midiOut.length === 0) {
 			console.log("No MIDI devices found!");
 			selector.style.display = 'none';
 		}
