@@ -729,7 +729,7 @@
 
 	addEventListener("keydown", (e) => {
 		if (e.ctrlKey) return;
-		if (e.target.tagName.toUpperCase() === 'INPUT') return;
+		if (e.target.tagName.toUpperCase() === 'INPUT' && e.target.type === 'text') return;
 		if (e.code === 'Slash' || e.code === 'Quote') e.preventDefault(); //prevent Quick find on Firefox
 		if (e.repeat) return;
 
@@ -741,7 +741,7 @@
 
 	addEventListener("keyup", (e) => {
 		if (e.ctrlKey) return;
-		if (e.target.tagName.toUpperCase() === 'INPUT') return;
+		if (e.target.tagName.toUpperCase() === 'INPUT' && e.target.type === 'text') return;
 		let t = document.getElementById(e.code);
 		if (t === null)
 			return;
