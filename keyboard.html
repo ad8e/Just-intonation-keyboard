@@ -593,9 +593,9 @@
 		}
 		//else send_type === 0
 		let now = audioCtx.currentTime;
-		let muteTime = note_info.muteTime;
-		note_info.gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
-		note_info.oscillator.stop(now + muteTime);
+		let {muteTime, gainNode, oscillator} = note_info;
+		gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
+		oscillator.stop(now + muteTime);
 		delete beep_holder[id];
 	}
 
