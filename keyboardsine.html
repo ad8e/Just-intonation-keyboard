@@ -308,7 +308,7 @@
 <select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
 <span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div></main>
 
-
+<script>let Module = undefined;</script>
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) {
@@ -892,7 +892,8 @@
 			synthCheckboxHolder.style.display = 'inline';
 		}
 	}
-	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
+	if (navigator.requestMIDIAccess)
+		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
 
 	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
