@@ -473,11 +473,11 @@
 	}
 
 
-	let note_frequency_visualizers = [];
 	let blue_square_on_play_div = document.createElement("div");
 	blue_square_on_play_div.classList.add('abs');
 
 	function start_note(t, volume = 1.0, type = 'sine') {
+		let id = t.id;
 		let rational = fraction_on_key(t);
 		let frequency = base_frequency;
 		let relative = 0;
@@ -489,7 +489,6 @@
 		}
 		frequency *= relative;
 		if (recording) {
-			let id = t.id;
 			let time = performance.now();
 			recording_holder[id] = [performance.now(), fraction_multiply(rational, colors_to_primes())];
 			if (recording_start == 0)
@@ -510,23 +509,31 @@
 			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
 			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
 			absoluteholder.prepend(newDiv);
-			note_frequency_visualizers[t.id] = newDiv;
+			ongoing_notes[id]["visual"] = newDiv;
 		}
 
+		ongoing_notes[id] = [];
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
-		if (typeof selectMIDIOutput !== 'undefined' && selectMIDIOutput.selectedIndex > 0) {
+		if (selectMIDIOutput.selectedIndex > 0) {
 			//when Note-On messages overlap: https://stackoverflow.com/a/69696511/
 			let midiNoteNumber = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//the midi key range is [0, 127]
 			midiNoteNumber = Math.min(Math.max(midiNoteNumber, 0), 127);
 			sendMidiMessage(0x90, midiNoteNumber, 100); //0x90 is Note-On, 100 is velocity (1 to 127). 100 is the default velocity in DAWs. 0 velocity is a pseudo-Note-Off.
 			console.log(midiNoteNumber);
-			return [2, midiNoteNumber]; //note that we're not storing the MIDI device. so if the device is changed in between Note-On and Note-Off, there will be trouble. but MIDI devices being detached would cause trouble anyway, so we don't care.
+
+			ongoing_notes[id][2] = midiNoteNumber; //note that we're not storing the MIDI device. so if the device is changed in between Note-On and Note-Off, there will be trouble. but MIDI devices being detached would cause trouble anyway, so we don't care.
+
+			//todo, can't return anymore!
 		}
+
+		if (synthCheckbox.checked === false)
+			return;
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
 			Module._play_interruptible_note(++incrementor_for_IDs, frequency);
-			return [1, incrementor_for_IDs];
+			ongoing_notes[id][1] = incrementor_for_IDs;
+			return;
 		}
 
 		//backup synthesizer in javascript, in case WASM fails. can have up to 20 ms latency, depending on your browser + OS.
@@ -558,12 +565,10 @@
 		gainNode.gain.setTargetAtTime(volume, now, 2.0 / frequency);
 		oscillator.start(now);
 		console.log("tone at", frequency, "Hz");
-		return [0, { oscillator, gainNode, muteTime }];
+		ongoing_notes[id][0] = { oscillator, gainNode, muteTime };
 	};
 
 	function stop_note(id) {
-		const [send_type, note_info] = ongoing_notes[id];
-
 		if (recording) {
 			if (recording_holder[id] === undefined) {
 				console.log("up stroke with no down stroke. could happen if you're starting recording in the middle of a note");
@@ -577,25 +582,23 @@
 				delete recording_holder[id];
 			}
 		}
-		note_frequency_visualizers[id].remove();
-		delete note_frequency_visualizers[id];
+		ongoing_notes[id]["visual"].remove();
 
-		if (send_type === 2) {
-			sendMidiMessage(0x80, note_info, 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
-			delete ongoing_notes[id];
-			return;
+		if (ongoing_notes[id][2] !== undefined) {
+			sendMidiMessage(0x80, ongoing_notes[id][2], 64); //0x80 = Note-Off. 64 is an arbitrary velocity with no justification. it's often ignored by the sink.
 		}
 
-		if (send_type === 1) {
-			Module._mute_interruptible_note(note_info);
-			delete ongoing_notes[id];
-			return;
+		if (ongoing_notes[id][1] !== undefined) {
+			Module._mute_interruptible_note(ongoing_notes[id][1]);
 		}
-		//else send_type === 0
-		let now = audioCtx.currentTime;
-		let {muteTime, gainNode, oscillator} = note_info;
-		gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
-		oscillator.stop(now + muteTime);
+
+		if (ongoing_notes[id][0] !== undefined) {
+			let now = audioCtx.currentTime;
+			let {muteTime, gainNode, oscillator} = ongoing_notes[id][0];
+			gainNode.gain.setTargetAtTime(0, now + 0.02, muteTime / 10); //0.02 is a more conservative latency, since jumps here cause clicks
+			oscillator.stop(now + muteTime);
+		}
+
 		delete ongoing_notes[id];
 	}
 
@@ -655,7 +658,7 @@
 		let handle = t.id;
 		if (ongoing_notes[handle] !== undefined)
 			stop_note(handle);
-		ongoing_notes[handle] = start_note(t);
+		start_note(t);
 	}
 	function button_up(t) {
 		let handle = t.id;
@@ -848,12 +851,10 @@
 
 	//Web MIDI. copied from https://webmidi-examples.glitch.me/
 	function midiReady(midi) {
-		let selector = document.createElement("select");
-		selector.id = "selectMIDIOutput";
-		secondcontainer.after(selector);
 		//react to device changes.
 		midi.addEventListener('statechange', (event) => {
-			console.log(event.port.name, event.port.manufacturer, event.port.state);
+			const port = event.port;
+			console.log(`State change: ${port.type} ${port.id} ${port.manufacturer} ${port.name} ${port.version} ${port.state}`);
 			initDevices(event.target);
 		});
 		initDevices(midi);
@@ -861,19 +862,33 @@
 
 	let midiOut = [];
 	function initDevices(midi) {
-		var selector = document.getElementById("selectMIDIOutput");
 		midiOut = Array.from(midi.outputs.values());
-		selector.innerHTML = "<option>Default output: in-page synth</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join('')); //if a device is added, this could reset your device choice. luckily, Firefox isn't even good enough to update the list of devices. unsure about Chrome
+		let formerSelected = selectMIDIOutput.selectedIndex;
+		selectMIDIOutput.innerHTML = "<option>Default output: in-page synth</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
+		if (formerSelected < selectMIDIOutput.length)
+			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
+		else selectMIDIOutput.selectedIndex = 0;
+		midiOutputChange();
 
 		if (midiOut.length === 0) {
 			console.log("No MIDI devices found!");
-			selector.style.display = 'none';
+			selectMIDIOutput.style.display = 'none';
 		}
-		else selector.style.display = 'inline-block';
+		else selectMIDIOutput.style.display = 'inline-block';
 	}
 	function sendMidiMessage(status, pitch, velocity) {
 		const device = midiOut[selectMIDIOutput.selectedIndex - 1];
 		device.send([status, pitch, velocity]);
+	}
+	function midiOutputChange() {
+		if (selectMIDIOutput.selectedIndex === 0) {
+			synthCheckbox.style.display = 'none';
+			synthCheckbox.checked = true;
+		}
+		else {
+			synthCheckbox.style.display = 'inline-block';
+		}
+		//todo
 	}
 	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
