@@ -342,11 +342,11 @@
 
 	function set_keyboard_position() {
 		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
-		let position_Db = 0.5 + 12 * 4 + 3 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
+		let position_Db = 0.5 + 12 * 4 + 2 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
 		piano.style.left = "calc(50% - var(--w) * " + position_Db.toString() + ")";
 		let frac1 = fraction_on_key(document.getElementById('ShiftRight'));
 		let adjust_blue = Number(frac1[0]) / Number(frac1[1]);
-		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660);
+		let position_1 = 12 * Math.log2(adjust_blue * base_frequency / 660) + 1; //add 1 to shift middle from E to Db
 
 		numberbar.style.left = "calc(50% - 3vw + var(--w) *" + position_1.toString() + ")"; //3vw = half of the width 6vw
 	}
@@ -510,7 +510,7 @@
 			//newDiv.classList.add('abs');
 			let newDiv = blue_square_on_play_div.cloneNode(false);
 
-			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5; //0.5 is because it's to the left border, and it's 1 thick
+			let position_1 = 12 * Math.log2(relative * base_frequency / 660) - 0.5 + 1; //0.5 is because it's to the left border, and it's 1 thick. +1 is because we're shifting from E to Db
 			newDiv.style = "left:calc(50vw + var(--w) * " + position_1 + ")";
 			note_frequency_visualizer.prepend(newDiv);
 			ongoing_notes[id][3] = newDiv;
