@@ -306,10 +306,9 @@
 </div>
 <div style="text-align:center">
 <select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
-<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div>
-<script>let Module = undefined;</script></main>
+<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div></main>
 
-
+<script async type="text/javascript" src="keyboard.js"></script> <!-- this WASM code handles the green links that play sounds when you click on them, and a better timbre for the keyboard. because I can't be bothered to do DSP in javascript. also, vscode's html formatter unpleasantly tends to move this comment to the next line, if the line limit is turned on, so sed can't kill it easily, and then it gets leftover in github's keyboard.html -->
 <script>
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) {
@@ -339,7 +338,6 @@
 	let colors = [0, 0, 0, 0]; //frequency of a note = (original number on key) * (this)
 	let colors_excluding_blue_keys = [0, 0, 0, 0]; //frequency of a note = (fraction written on key) * (this). because blue keys modify the text written on the key
 
-
 	function set_keyboard_position() {
 		let rounding_adjust = (12 * Math.log2(3) - 19) * colors[1] + (12 * Math.log2(5) - 28) * colors[2] + (12 * Math.log2(7) - 34) * colors[3];
 		let position_Db = 0.5 + 12 * 4 + 1 - rounding_adjust; //subtract rounding_adjust, because there's a - in the calc
@@ -365,7 +363,6 @@
 				list[0].classList.add("on");
 		}
 	}
-
 
 	function ch_harmony(number, direction, is_blue) {
 		let pm1 = direction ? 1 : -1;
@@ -474,7 +471,6 @@
 		else
 			return a[0].toString();
 	}
-
 
 	let blue_square_on_play_div = document.createElement("div");
 	blue_square_on_play_div.classList.add('abs');
@@ -852,7 +848,6 @@
 		}
 	}
 
-
 	//Web MIDI. copied from https://webmidi-examples.glitch.me/
 	function midiReady(midi) {
 		//react to device changes.
@@ -893,8 +888,7 @@
 			synthCheckboxHolder.style.display = 'inline';
 		}
 	}
-	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
-
+	//navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
 	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
 	for (let i = 0; i < keymultiples.length; ++i) {
