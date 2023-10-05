@@ -494,6 +494,7 @@
 			if (recording_start == 0)
 				recording_start = time;
 		}
+		ongoing_notes[id] = [];
 
 		//todo, maybe move this after the note plays
 		//it costs 1-2.4 ms latency for 21 keys. to test: press Record, and press the all-notes green button
@@ -512,7 +513,6 @@
 			ongoing_notes[id]["visual"] = newDiv;
 		}
 
-		ongoing_notes[id] = [];
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
 		if (selectMIDIOutput.selectedIndex > 0) {
 			//when Note-On messages overlap: https://stackoverflow.com/a/69696511/
