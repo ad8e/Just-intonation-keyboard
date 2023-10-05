@@ -603,7 +603,7 @@
 	}
 
 	let ongoing_notes = []; //when a note is started, ongoing_notes[id] is an array of information about that note, used for its destructor.
-	//ongoing_notes[id][0] = javascript synth, [1] = C++ synth, [2] = Web MIDI output, [3] = the cyan blue rectangle over the piano.
+	//[0] = javascript synth, [1] = C++ synth, [2] = Web MIDI output, [3] = the cyan blue rectangle over the piano.
 
 	let base_frequency = 82.5; //3/4 of 110 Hz. 100 can cause problems for people with absolute pitch. lower starting frequency is better, since I added 32 as a numerator. but watch out for the low end pitch. 20 Hz is already unmusical
 	const base_midi_note = 40; //MIDI relies on associating note 40 to 82.5 Hz. if 82.5 Hz is changed, update this.
