@@ -5,7 +5,7 @@ The presentation is at https://ad8e.pages.dev/keyboard. This repository is for p
 If you want to both avoid latency and run the keyboard locally:
 
 1. Download the repository
-2. Open a console. If you're on Linux, run `./corsplease.py`. If you're on Windows, run `python3 corsplease.py`. This sets up a local webserver to handle CORS, which makes your browser happy.
+2. Open a console. If you're on Linux, run `./corsplease.py`. If you're on Windows, run `python3 corsplease.py`. This sets up a local web server to handle CORS, which makes your browser happy.
 3. Visit `http://127.0.0.1:8000/keyboard.html` in your web browser.
 
-See [this page](https://docs.python.org/3/library/http.server.html#http-server-security) for security considerations of running a local webserver. Only your own computer can connect to this server; other computers on your network cannot. So if you're not running untrusted programs, it should be safe.
+See [this page](https://docs.python.org/3/library/http.server.html#http-server-security) for security considerations of running a local web server. Only your own computer can connect to this server; other computers on your network cannot. So if you're not running untrusted programs, it should be safe.
