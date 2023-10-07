@@ -306,7 +306,8 @@
 </div>
 <div style="text-align:center">
 <select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
-<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div></main>
+<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div>
+<script>var Module = undefined; /* let Module doesn't work, because it causes a redefinition if Module is found */</script></main>
 
 <script async type="text/javascript" src="keyboard.js"></script> <!-- this WASM code handles the green links that play sounds when you click on them, and a better timbre for the keyboard. because I can't be bothered to do DSP in javascript. also, vscode's html formatter unpleasantly tends to move this comment to the next line, if the line limit is turned on, so sed can't kill it easily, and then it gets leftover in github's keyboard.html -->
 <script>
