@@ -1,6 +1,6 @@
 The presentation is at https://ad8e.pages.dev/keyboard. This repository is for patches, issues, discussions, questions, etc.
 
-`keyboard.html` can run locally. The downside is that the timbre is a sine wave with 10-20 ms latency, because [your browser isn't nice about locally downloaded files](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements). If you want to avoid this latency, then just visit [the original webpage](https://ad8e.pages.dev/keyboard).
+`keyboard.html` can run locally. The downside is that the timbre is a sine wave with 10-20 ms latency, because [your browser isn't nice about locally downloaded files](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements). To avoid this latency, just visit [the original webpage](https://ad8e.pages.dev/keyboard).
 
 If you want to both avoid latency and run the keyboard locally:
 

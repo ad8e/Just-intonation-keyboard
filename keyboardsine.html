@@ -658,16 +658,14 @@
 	}
 
 	function numerator_down(t) {
-		let handle = t.id;
-		if (ongoing_notes[handle] !== undefined)
-			stop_note(handle);
+		if (ongoing_notes[t.id] !== undefined)
+			stop_note(t.id);
 		start_note(t);
 	}
 	function button_up(t) {
-		let handle = t.id;
-		if (ongoing_notes[handle] === undefined)
+		if (ongoing_notes[t.id] === undefined)
 			return;
-		stop_note(handle);
+		stop_note(t.id);
 	}
 
 	function downpress(t) {
@@ -785,7 +783,6 @@
 
 	//catch all mouseups, not just ones over the keyboard
 	addEventListener("pointerup", (e) => {
-		let id = e.pointerId;
 		//prevent double tap to select
 		//apparently, this doesn't work in pointerup. only touchend can prevent (forest fires) double tap to select?
 		//let in_keyboard = t.closest("#keyboard");
@@ -793,7 +790,7 @@
 		//	e.preventDefault();
 		//}
 
-		pup(id);
+		pup(e.pointerId);
 	});
 
 	//https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not
@@ -802,7 +799,6 @@
 			return;
 		//seems there's no obvious way to track what button is pressed; we'd need to store it. let's not bother. so right click drag will cause issues.
 		let id = e.pointerId;
-		let cached_event = pointerIdsPressed[id];
 		let t = e.target;
 
 		if (t.classList === undefined) //HTMLDocument avoidance
@@ -810,7 +806,7 @@
 		if (t.classList.contains("con"))
 			t = t.firstChild;
 
-		if (t !== cached_event) {
+		if (t !== pointerIdsPressed[id]) { //t is different from the cached target
 			pup(id);
 			pdown(id, t);
 		}
@@ -852,9 +848,8 @@
 	}
 
 
-	//Web MIDI. copied from https://webmidi-examples.glitch.me/
+	//Web MIDI
 	function midiReady(midi) {
-		//react to device changes.
 		midi.addEventListener('statechange', (event) => {
 			const port = event.port;
 			console.log(`State change: ${port.type} ${port.id} ${port.manufacturer} ${port.name} ${port.version} ${port.state}`);
@@ -892,8 +887,8 @@
 			synthCheckboxHolder.style.display = 'inline';
 		}
 	}
-	//if (navigator.requestMIDIAccess)
-	//	navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
+	if (navigator.requestMIDIAccess)
+		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
 
 	let keymultiples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25, 27, 30, 32];
