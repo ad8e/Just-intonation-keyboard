@@ -306,11 +306,18 @@
 </div>
 <div style="text-align:center">
 <select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
-<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div>
-<script>var Module = undefined; /* let Module doesn't work, because it causes a redefinition if Module is found */</script></main>
+<span id="synthCheckboxHolder"><label><input type="checkbox" id="soundCheckbox" onchange="enableSoundChanged(event)" />Sound on</label></span></div>
+<script>var Module = undefined; /* let Module doesn't work, because it causes a redefinition if Module is found */</script>
+</main>
 
 <script async type="text/javascript" src="keyboard.js"></script> <!-- this WASM code handles the green links that play sounds when you click on them, and a better timbre for the keyboard. because I can't be bothered to do DSP in javascript. also, vscode's html formatter unpleasantly tends to move this comment to the next line, if the line limit is turned on, so sed can't kill it easily, and then it gets leftover in github's keyboard.html -->
 <script>
+	window.addEventListener('load', () => {
+		console.log("soundCheckbox", soundCheckbox)
+		// Firefox remembers input selectors on-refresh, so we reset it here.
+		document.getElementById("soundCheckbox").checked = false;
+	});
+
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) {
 		var residual_green_keys = document.getElementsByClassName("keyg");
@@ -527,7 +534,7 @@
 			//todo, can't return anymore!
 		}
 
-		if (synthCheckbox.checked === false)
+		if (soundCheckbox.checked === false)
 			return;
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
@@ -845,6 +852,17 @@
 		}
 	}
 
+	// WASM Audio
+	let hasInitialized = false;
+	function enableSoundChanged({ target: checkbox }) {
+		if (!hasInitialized && checkbox.checked) {
+			console.log("Initializing the WASM audio context for the first time")
+			hasInitialized = true;
+			Module.start();
+			console.log("Initialized WASM audio context")
+		}
+	}
+
 	//Web MIDI
 	function midiReady(midi) {
 		midi.addEventListener('statechange', (event) => {
@@ -876,13 +894,13 @@
 		device.send([status, pitch, velocity]);
 	}
 	function midiOutputChanged() {
-		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
-			synthCheckboxHolder.style.display = 'none';
-			synthCheckbox.checked = true;
-		}
-		else {
-			synthCheckboxHolder.style.display = 'inline';
-		}
+		// if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
+		// 	synthCheckboxHolder.style.display = 'none';
+		// 	soundCheckbox.checked = true;
+		// }
+		// else {
+		// 	synthCheckboxHolder.style.display = 'inline';
+		// }
 	}
 	if (navigator.requestMIDIAccess)
 		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
