@@ -18,6 +18,8 @@
 		margin-left: auto;
 		margin-right: auto;
 		max-width: min(800px, 100%);
+		display: flex;
+		flex-direction: column;
 	}
 
 	img {
@@ -36,6 +38,13 @@
 
 	:root {
 		--key-scale: min(23.5vh, 8.51063829787vw);
+		--black-muted: #333333;
+		--charcoal: #606060;
+		--slate: #A9A9A9;
+		--text-gray-500: #6b7280;
+		--text-gray-700: #374151;
+		--text-gray-900: #111827;
+		--text-error: #FA4D56;
 	}
 
 	.flex-v {
@@ -195,6 +204,100 @@
 		height: calc(var(--key-scale)*0.23);
 		background-color: #9ff;
 	}
+
+ 	#keyboard.disabled,
+	#secondcontainer.disabled {
+		opacity: 0.40;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+    #config {
+        align-self: center;
+        border-radius: 8px;
+        border: 1px solid rgb(226 232 240);
+        color: var(--text-gray-900);
+        margin-top: 24px;
+        max-width: fit-content;
+        overflow: hidden;
+        width: 100%;
+        flex-direction: column;
+        font-family: Inter;
+        padding: 16px;
+
+        .title {
+            align-items: center;
+            display: flex;
+            font-weight: 500;
+            justify-content: space-between;
+            font-size: 18px;
+
+            .warning {
+                color: var(--text-error);
+                display: flex;
+                flex: 1;
+                font-size: 16px;
+                font-weight: 600;
+                justify-content: center;
+            }
+            .warning.hidden {
+                display: none;
+            }
+        }
+
+        .section-divider {
+            background-color: #737373;
+            border-top: 0;
+            height: 0.125rem;
+            opacity: 0.05;
+        }
+
+        .section {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            padding: 16px 0;
+
+            .section-title {
+                align-items: center;
+                display: flex;
+                font-weight: 500;
+                padding-left: 16px;
+            }
+
+            .section-desc {
+                align-items: center;
+                color: var(--text-gray-500);
+                display: flex;
+                padding: 8px 0px 8px 32px;
+                font-size: 14px;
+            }
+
+            .options {
+                color: var(--text-gray-700);
+                align-items: center;
+                display: flex;
+                font-size: 14px;
+                justify-content: flex-start;
+                padding-left: 32px;
+
+                label {
+                    white-space: nowrap;
+                    margin-right: 16px;
+                    text-align: right;
+                    width: max-content;
+                }
+
+                input[type="checkbox"],
+                select {
+                    background: white;
+                    border: 1px solid var(--text-gray-500);
+                    width: auto;
+                }
+            }
+        }
+    }
 </style>
 
 <body>
@@ -304,13 +407,96 @@
 <div class="bkey" style="left:calc(var(--w) * 93)"></div>
 </div>
 </div>
-<div style="text-align:center">
-<select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select>
-<span id="synthCheckboxHolder" style="display:none"><label><input type="checkbox" id="synthCheckbox" checked/>Sound on</label></span></div>
+<div id="options">
+
+</div>
+<!-- <div style="text-align:center"> -->
+<!-- <select name="MIDI output selection" id="selectMIDIOutput" onchange="midiOutputChanged()" style="display:none"></select> -->
+<!-- <span id="synthCheckboxHolder"><label><input type="checkbox" id="soundCheckbox" onchange="enableSoundChanged(event)" />Sound on</label></span></div> -->
+
+<div id="config">
+	<div class="title">
+		Configuration
+		<div id="warning" class="warning">enable sound or midi</div>
+	</div>
+	<div class="section">
+		<div class="section-title">Sound</div>
+		<div class="section-desc">Configuration options for the in-page synthesizer.</div>
+		<div class="options">
+			<label for="soundCheckbox">Enable sound:</label>
+			<input type="checkbox" id="soundCheckbox" onchange="enableSoundChanged(event)" />
+		</div>
+	</div>
+	<div class="section-divider"></div>
+	<div class="section">
+		<div class="section-title">MIDI</div>
+		<div class="section-desc">Optional configuration for MIDI routing.</div>
+		<div class="options">
+			<label for="selectMIDIOutput">Output device:</label>
+			<select id="selectMIDIOutput" onchange="midiOutputChanged()">
+				<option value="" disabled selected hidden>No MIDI devices available</option>
+			</select>
+		</div>
+	</div>
+</div>
+
 <script>var Module = undefined; /* let Module doesn't work, because it causes a redefinition if Module is found */</script></main>
 
 <script async type="text/javascript" src="keyboard.js"></script> <!-- this WASM code handles the green links that play sounds when you click on them, and a better timbre for the keyboard. because I can't be bothered to do DSP in javascript. also, vscode's html formatter unpleasantly tends to move this comment to the next line, if the line limit is turned on, so sed can't kill it easily, and then it gets leftover in github's keyboard.html -->
 <script>
+	window.addEventListener('load', () => {
+		// Firefox remembers input selectors on-refresh, so we reset it here.
+		document.getElementById("soundCheckbox").checked = false;
+	});
+
+	document.addEventListener("DOMContentLoaded", function() {
+		// Firefox doesn't auto-select the 'placeholder' option when the page loads.
+		selectMIDIOutput.selectedIndex = 0;
+
+		disableKeyboard();
+
+		soundCheckbox.addEventListener("change", updateKeyboard);
+		selectMIDIOutput.addEventListener("change", updateKeyboard);
+		updateKeyboard();
+
+		// Overkill, but aligns the option labels nicely.
+		let labels = document.querySelectorAll('#config .options label');
+		let maxWidth = 0;
+
+		labels.forEach((label) => {
+			maxWidth = Math.max(label.offsetWidth, maxWidth);
+		});
+
+		labels.forEach((label) => {
+			label.style.width = `${maxWidth}px`;
+		});
+	});
+
+	function updateKeyboard() {
+		// One option for the placeholder, and another for 'MIDI off' (shown if the user has MIDI)
+		const midiOn = selectMIDIOutput.options.length > 2 && selectMIDIOutput.selectedIndex > 2
+		const soundOn = audioContextInitialized && soundCheckbox.checked
+		if ((midiOut.length && midiOn) || soundOn) {
+			enableKeyboard();
+		} else {
+			disableKeyboard();
+		}
+	}
+
+	function disableKeyboard() {
+		keyboard.classList.add("disabled");
+		secondcontainer.classList.add("disabled");
+		warning.textContent = midiOut.length ? "enable sound or midi" : "enable sound";
+		warning.classList.remove("hidden");
+	}
+
+	function enableKeyboard() {
+		keyboard.classList.remove("disabled");
+		secondcontainer.classList.remove("disabled");
+		warning.classList.add("hidden");
+	}
+
+
 	function play(str) { Module._play_string(stringToNewUTF8(str)); }
 	function play_on_keyboard(str) {
 		var residual_green_keys = document.getElementsByClassName("keyg");
@@ -514,7 +700,7 @@
 		}
 
 		//in the list of devices, the first is "default", and the devices after the first are MIDI devices
-		if (selectMIDIOutput.selectedIndex > 0) {
+		if (selectMIDIOutput.selectedIndex > 1) {
 			//when Note-On messages overlap: https://stackoverflow.com/a/69696511/
 			let midiNoteNumber = base_midi_note + piano_key_from_primes(colors) + t["piano_offset"];
 			//the midi key range is [0, 127]
@@ -527,7 +713,7 @@
 			//todo, can't return anymore!
 		}
 
-		if (synthCheckbox.checked === false)
+		if (soundCheckbox.checked === false)
 			return;
 
 		if (Module !== undefined && Module._play_interruptible_note !== undefined) {
@@ -845,6 +1031,17 @@
 		}
 	}
 
+	// WASM Audio
+	let audioContextInitialized = false;
+	function enableSoundChanged({ target: checkbox }) {
+		if (!audioContextInitialized && checkbox.checked) {
+			audioContextInitialized = true;
+			console.log("Initializing the WASM audio context for the first time")
+			Module.start();
+			console.log("Initialized WASM audio context")
+		}
+	}
+
 	//Web MIDI
 	function midiReady(midi) {
 		midi.addEventListener('statechange', (event) => {
@@ -858,32 +1055,28 @@
 	let midiOut = [];
 	function initDevices(midi) {
 		midiOut = Array.from(midi.outputs.values());
+
+		const placeholderOption = `<option value="" disabled selected hidden>Select a MIDI output device</option>`;
+		const offOption = "<option selected>MIDI output off</option>"
 		let formerSelected = selectMIDIOutput.selectedIndex;
-		selectMIDIOutput.innerHTML = "<option>MIDI output off</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
+		selectMIDIOutput.innerHTML = `${placeholderOption}${offOption}`.concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
 		if (formerSelected < selectMIDIOutput.length)
 			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
 		else selectMIDIOutput.selectedIndex = 0;
 		midiOutputChanged();
-
 		if (midiOut.length === 0) {
 			console.log("No MIDI devices found!");
-			selectMIDIOutput.style.display = 'none';
 		}
-		else selectMIDIOutput.style.display = 'inline-block';
 	}
 	function sendMidiMessage(status, pitch, velocity) {
-		const device = midiOut[selectMIDIOutput.selectedIndex - 1];
+		const device = midiOut[selectMIDIOutput.selectedIndex - 2]; // One option for the placeholder, and another for 'MIDI off' (shown if the user has MIDI)
 		device.send([status, pitch, velocity]);
 	}
 	function midiOutputChanged() {
-		if (selectMIDIOutput.selectedIndex < 1) { //can be -1 if no choice exists, or 0 if the default is chosen
-			synthCheckboxHolder.style.display = 'none';
-			synthCheckbox.checked = true;
-		}
-		else {
-			synthCheckboxHolder.style.display = 'inline';
-		}
+		//can be -1 if no choice exists, 0 if the placeholder is selected, or 1 if the 'off' option is selected
+		updateKeyboard();
 	}
+
 	if (navigator.requestMIDIAccess)
 		navigator.requestMIDIAccess().then(midiReady, (err) => console.log('Web MIDI error: ', err));
 
