@@ -329,15 +329,15 @@
 </div>
 </div>
 <div id="config">
-	<div class="options" id="soundCheckboxHolder" style="display:none">
-		<label for="soundCheckbox">Enable sound:</label>
-		<input type="checkbox" id="soundCheckbox" checked/>
-	</div>
 	<div class="options">
 		<label for="selectMIDIOutput">MIDI output:</label>
 		<select id="selectMIDIOutput" onchange="midiOutputChanged()">
 			<option selected>No MIDI devices available</option>
 		</select>
+	</div>
+	<div class="options" id="soundCheckboxHolder" style="display:none">
+		<label for="soundCheckbox">Enable sound:</label>
+		<input type="checkbox" id="soundCheckbox" checked/>
 	</div>
 </div>
 
@@ -896,12 +896,12 @@
 			//console.log("No MIDI devices found"); //might be annoying, spamming the console even though the user knows he has no MIDI devices
 			selectMIDIOutput.innerHTML = "<option>No MIDI devices available</option>"; //the keyboard has a different options UI, where the MIDI selection box is still shown even when there are no MIDI devices
 		}
-		else{
+		else {
 			selectMIDIOutput.innerHTML = "<option>MIDI output off</option>".concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
 			selectMIDIOutput.style.display = '';
 		}
 		if (formerSelected < selectMIDIOutput.length)
-			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. this only works if all the higher devices don't change. my guess is overwriting innerHTML resets the choice.
+			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. this only works if all the devices above don't change. my guess is overwriting innerHTML resets the choice.
 		else selectMIDIOutput.selectedIndex = 0;
 		midiOutputChanged();
 	}
