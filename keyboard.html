@@ -200,26 +200,26 @@
 <body>
 	<main id='main'><style>
 #config {
-  border-radius: 8px;
-  border: 1px solid rgb(226, 232, 240);
-  margin-top: 24px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: fit-content;
+	border-radius: 8px;
+	border: 1px solid rgb(226, 232, 240);
+	margin-top: 24px;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: fit-content;
 }
 
 #config .options {
-  margin: 8px;
-  align-items: center;
-  display: flex;
-  justify-content: flex-start;
+	margin: 8px;
+	align-items: center;
+	display: flex;
+	justify-content: flex-start;
 }
 
 #config .options label {
-  white-space: nowrap;
-  margin-right: 24px;
-  text-align: right;
-  width: max-content;
+	white-space: nowrap;
+	margin-right: 24px;
+	text-align: right;
+	width: max-content;
 }
 </style>
 <div class="flex-v" id="keyboard">
@@ -367,7 +367,7 @@
 
 	if (typeof SharedArrayBuffer === 'undefined') { //&& typeof Module !== 'undefined' //I think Module gets loaded later, on non-local webservers. so this leaves some junk in the separate keyboard. let's remove it with sed.
 		let p = document.createElement("p");
-		
+
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
