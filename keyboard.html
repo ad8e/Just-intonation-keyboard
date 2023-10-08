@@ -10,7 +10,7 @@
 <title>A novel keyboard for music</title>
 <style>
 	body {
-		font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+		font-family: Inter, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, roboto, noto, arial, sans-serif;
 		overflow-x: hidden; /* necessary on Firefox: clicking inside the input box causes a huge horizontal scrollbar, probably because the keyboard's transform falls apart. also necessary on chrome: 100 vw doesn't consider the scrollbar */
 	}
 
@@ -301,7 +301,31 @@
 </style>
 
 <body>
-	<main id='main'><div class="flex-v" id="keyboard">
+	<main id='main'><style>
+#config {
+	border-radius: 8px;
+	border: 1px solid rgb(226 232 240);
+	margin-top: 24px;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: fit-content;
+
+	.options {
+		margin: 8px;
+		align-items: center;
+		display: flex;
+		justify-content: flex-start;
+
+		label {
+			white-space: nowrap;
+			margin-right: 24px;
+			text-align: right;
+			width: max-content;
+		}
+	}
+}
+</style>
+<div class="flex-v" id="keyboard">
 <div class="flex-h">
 <div class='con r0 p1' style="width: calc(var(--key-scale) * 0.5)"><div class="keyn" style="width: calc(var(--key-scale) * 0.4)"></div></div>
 <div class='con r0 p2'><button class="keyb" id="Digit2">6/5</button></div>
@@ -518,7 +542,7 @@
 
 	if (typeof SharedArrayBuffer === 'undefined') { //&& typeof Module !== 'undefined' //I think Module gets loaded later, on non-local webservers. so this leaves some junk in the separate keyboard. let's remove it with sed.
 		let p = document.createElement("p");
-		
+
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
@@ -1061,7 +1085,7 @@
 		let formerSelected = selectMIDIOutput.selectedIndex;
 		selectMIDIOutput.innerHTML = `${placeholderOption}${offOption}`.concat(midiOut.map(device => `<option>${device.name}</option>`).join(''));
 		if (formerSelected < selectMIDIOutput.length)
-			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. my guess is overwriting innerHTML will reset things
+			selectMIDIOutput.selectedIndex = formerSelected; //try to preserve device choice. this only works if all the higher devices don't change. my guess is overwriting innerHTML resets the choice.
 		else selectMIDIOutput.selectedIndex = 0;
 		midiOutputChanged();
 		if (midiOut.length === 0) {
