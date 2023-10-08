@@ -706,7 +706,7 @@ function run() {
 //      It must be created or resumed after a user gesture on the page."
 //
 // Allow the user to execute this via a UI control.
-Module["start"] = function () {
+Module["start"] = function() {
     if (ready) {
         callMain();
         postRun()
