@@ -558,8 +558,6 @@
 			console.log(midiNoteNumber);
 
 			ongoing_notes[id][2] = midiNoteNumber; //note that we're not storing the MIDI device. so if the device is changed in between Note-On and Note-Off, there will be trouble. but MIDI devices being detached would cause trouble anyway, so we don't care.
-
-			//todo, can't return anymore!
 		}
 
 		if (soundCheckbox.checked === false)
@@ -599,7 +597,7 @@
 		gainNode.gain.setValueAtTime(0, now);
 		gainNode.gain.setTargetAtTime(volume, now, 2.0 / frequency);
 		oscillator.start(now);
-		console.log("tone at", frequency, "Hz");
+		//console.log("tone at", frequency, "Hz");
 		ongoing_notes[id][0] = { oscillator, gainNode, muteTime };
 	};
 
