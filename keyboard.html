@@ -184,7 +184,7 @@
 		position: absolute;
 	}
 	#numberbar {
-		top: calc(var(--key-scale)*-0.02);
+		/*top: calc(var(--key-scale)*-0.02);*/
 	}
 	#piano {
 		top: calc(var(--key-scale)*0.23);
@@ -367,7 +367,7 @@
 
 	if (typeof SharedArrayBuffer === 'undefined') { //&& typeof Module !== 'undefined' //I think Module gets loaded later, on non-local webservers. so this leaves some junk in the separate keyboard. let's remove it with sed.
 		let p = document.createElement("p");
-
+		
 		keyboard.parentNode.insertBefore(p, keyboard);
 	}
 
