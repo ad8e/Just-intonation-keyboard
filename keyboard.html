@@ -356,7 +356,7 @@
 	}
 
 	//license for keyboard: 0BSD
-	//this implementation doesn't support remapping keys or Web MIDI, because I'm lazy and Firefox doesn't have Web MIDI
+	//if anyone cares about remapping keys, let me know
 
 	//Chrome and Edge have a 5-year old bug causing spurious keypresses. Just don't hold down harmony keys. A code solution would be to keep track of whether the harmonic keys are pressed. I didn't bother.
 	//https://stackoverflow.com/q/50372849
@@ -894,7 +894,7 @@
 	function initDevices(midi) {
 		midiOut = Array.from(midi.outputs.values());
 		let formerSelected = selectMIDIOutput.selectedIndex;
-		if (midiOut.length == 0){
+		if (midiOut.length === 0){
 			//console.log("No MIDI devices found"); //might be annoying, spamming the console even though the user knows he has no MIDI devices
 			selectMIDIOutput.innerHTML = "<option>No MIDI devices available</option>"; //the keyboard has a different options UI, where the MIDI selection box is still shown even when there are no MIDI devices
 		}
